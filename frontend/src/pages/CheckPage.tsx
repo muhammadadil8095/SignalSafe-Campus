@@ -1,5 +1,5 @@
 /**
- * CheckPage — Swiss luxury-brutalist threat vector inspector.
+ * CheckPage — Multi-vector threat inspector with comprehensive, easy-to-understand copy.
  */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -19,31 +19,31 @@ interface Option {
 const KIND_OPTIONS: Option[] = [
   {
     value: 'url',
-    label: 'Link / URL',
-    badge: 'LEXICAL ML',
-    placeholder: 'https://campus-verify-fees.xyz/portal/login',
-    hint: 'Evaluates IP hosts, punycode, typosquatting & official domain allowlist.',
+    label: 'Website Link / URL',
+    badge: 'DOMAIN CHECK',
+    placeholder: 'e.g. https://campus-verify-fees.xyz/portal/login',
+    hint: 'Checks if the web address is fake, has strange spelling, or mimics an official college login page.',
   },
   {
     value: 'message',
-    label: 'SMS / Text',
-    badge: 'HEURISTICS',
-    placeholder: 'URGENT: Dean of Students office requires verification of your hall pass immediately...',
-    hint: 'Flags authority impersonation, artificial urgency, and deceptive link mismatches.',
+    label: 'SMS or Text Message',
+    badge: 'MESSAGE SCAN',
+    placeholder: 'e.g. URGENT: Dean of Students office requires verification of your hall ticket immediately or your seat will be cancelled...',
+    hint: 'Detects fake urgency, people pretending to be university officials, and deceptive links.',
   },
   {
     value: 'payment',
-    label: 'Fee Demand',
-    badge: 'SYNTHETIC RULES',
-    placeholder: 'Hostel dues pending: Pay 4,500 INR to registrar-helpdesk@okhdfcbank before 5 PM today.',
-    hint: 'Evaluates unverified VPA formats, direct transfer solicitations, and panic triggers.',
+    label: 'Fee or Payment Request',
+    badge: 'FINANCIAL FRAUD',
+    placeholder: 'e.g. Hostel dues overdue: Please send 4,500 INR to registrar-helpdesk@okhdfcbank before 5 PM today...',
+    hint: 'Flags unofficial UPI IDs, personal bank transfer requests, and fraudulent fine notices.',
   },
   {
     value: 'bullying',
-    label: 'Harassment',
-    badge: 'LEXICON MATCH',
-    placeholder: 'Paste the abusive or threatening text you received on campus channels...',
-    hint: 'Scans for toxic patterns and harassment keywords.',
+    label: 'Harassment or Bullying',
+    badge: 'HARASSMENT FILTER',
+    placeholder: 'Paste the abusive or threatening text you received on campus channels or student groups...',
+    hint: 'Screens for abusive language, threats, and cyberbullying patterns.',
   },
 ];
 
@@ -75,7 +75,7 @@ export default function CheckPage() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Threat inspection failed. Please verify API gateway availability.',
+          : 'Could not connect to the security engine right now. Please verify your internet connection or try again shortly.',
       );
     } finally {
       setLoading(false);
@@ -91,28 +91,28 @@ export default function CheckPage() {
           className="inline-flex items-center gap-1.5 text-xs uppercase font-bold tracking-wider text-[#111111] hover:text-[#838282] transition-colors"
         >
           <span>←</span>
-          <span>Return Home</span>
+          <span>Back to Home</span>
         </Link>
         <span className="font-mono text-[11px] uppercase tracking-widest text-[#838282]">
-          INFERENCE PIPELINE
+          CHECK BEFORE CLICKING
         </span>
       </div>
 
       {/* Header */}
       <div>
         <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111]">
-          Threat Inspector
+          Check a Link or Message
         </h1>
         <p className="text-xs text-[#838282] mt-1 leading-relaxed">
-          Submit suspicious links, texts, or fee notices. Analysis is processed through centralized detection models.
+          Not sure if an SMS, link, or payment request is real? Paste it below to receive an instant, evidence-backed security check.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        {/* Classification Choice Grid */}
+        {/* Choice Grid */}
         <fieldset className="space-y-1.5">
           <legend className="text-xs font-mono uppercase tracking-wider text-[#838282]">
-            SELECT THREAT VECTOR
+            WHAT WOULD YOU LIKE TO CHECK?
           </legend>
           <div className="grid grid-cols-2 gap-2">
             {KIND_OPTIONS.map((opt) => {
@@ -154,10 +154,10 @@ export default function CheckPage() {
               htmlFor="check-input"
               className="text-xs font-mono uppercase tracking-wider text-[#838282]"
             >
-              PAYLOAD CONTENT
+              PASTE CONTENT HERE
             </label>
             <span className="text-xs font-mono text-[#838282]">
-              {input.length} / 4000
+              {input.length} / 4000 characters
             </span>
           </div>
 
@@ -171,7 +171,7 @@ export default function CheckPage() {
             maxLength={4000}
             className="w-full bg-[#ffffff] border border-[#1e1e1e] p-3 text-xs sm:text-sm font-mono text-[#111111] placeholder-[#b6b5b5] focus:outline-none focus:ring-1 focus:ring-[#111111] resize-none leading-relaxed"
           />
-          <p className="text-[11px] text-[#838282]">
+          <p className="text-[11px] text-[#838282] leading-relaxed">
             {currentOption.hint}
           </p>
         </div>
@@ -185,10 +185,10 @@ export default function CheckPage() {
           className="w-full pill-button-invert py-3 px-6 text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <span>Evaluating Threat Vector…</span>
+            <span>Analyzing for threats…</span>
           ) : (
             <>
-              <span>Execute Threat Evaluation</span>
+              <span>Check for Threats</span>
               <span>→</span>
             </>
           )}
@@ -197,7 +197,7 @@ export default function CheckPage() {
 
       {loading && (
         <div className="border border-[#1e1e1e] bg-[#ffffff] p-6">
-          <Spinner label="EXECUTING LEXICAL ATTRIBUTION & CLASSIFICATION…" />
+          <Spinner label="Scanning link patterns and checking university allowlist…" />
         </div>
       )}
     </div>

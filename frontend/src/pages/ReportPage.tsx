@@ -1,5 +1,5 @@
 /**
- * ReportPage — Swiss luxury-brutalist incident escalation form.
+ * ReportPage — Clear, student-friendly incident reporting form.
  */
 import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -13,18 +13,18 @@ interface LocationState {
 }
 
 const CATEGORIES: { value: ReportCategory; label: string; desc: string }[] = [
-  { value: 'phishing', label: 'Credential Phishing', desc: 'Counterfeit login portals or student account compromise.' },
-  { value: 'qr', label: 'Physical Malicious QR', desc: 'Tampered exam fee, cafeteria, or noticeboard QR stickers.' },
-  { value: 'payment', label: 'Financial / UPI Fraud', desc: 'Unauthorized fee demands or fraudulent UPI solicitations.' },
-  { value: 'bullying', label: 'Harassment / Threats', desc: 'Intimidation or hostile text on campus channels.' },
-  { value: 'other', label: 'Unclassified Threat', desc: 'Other security anomalies or suspicious activity.' },
+  { value: 'phishing', label: 'Fake Login Website / Phishing', desc: 'A counterfeit university website or form trying to steal student passwords or OTPs.' },
+  { value: 'qr', label: 'Suspicious QR Code Sticker', desc: 'A physical sticker found on campus noticeboards, payment counters, or desks.' },
+  { value: 'payment', label: 'Payment or Fee Scam', desc: 'An unauthorized message asking you to pay fees or fines to an unfamiliar personal UPI ID.' },
+  { value: 'bullying', label: 'Online Harassment or Bullying', desc: 'Threatening, abusive, or harmful messages sent in campus group chats or forums.' },
+  { value: 'other', label: 'Other Suspicious Incident', desc: 'Any other security concern or suspicious message that needs university review.' },
 ];
 
-const SEVERITIES: { value: ReportSeverity; label: string }[] = [
-  { value: 'low', label: 'LOW' },
-  { value: 'medium', label: 'MEDIUM' },
-  { value: 'high', label: 'HIGH' },
-  { value: 'critical', label: 'CRITICAL' },
+const SEVERITIES: { value: ReportSeverity; label: string; hint: string }[] = [
+  { value: 'low', label: 'LOW', hint: 'Minor nuisance or unsolicited spam' },
+  { value: 'medium', label: 'MEDIUM', hint: 'Suspicious link with potential risk' },
+  { value: 'high', label: 'HIGH', hint: 'Actively attempting to steal logins or money' },
+  { value: 'critical', label: 'CRITICAL', hint: 'Immediate danger or large-scale attack' },
 ];
 
 export default function ReportPage() {
@@ -70,7 +70,7 @@ export default function ReportPage() {
   if (!checkId) {
     return (
       <div className="max-w-md mx-auto text-center py-20 space-y-4 font-satoshi">
-        <p className="text-[#838282] text-sm">No threat check attached to this session.</p>
+        <p className="text-[#838282] text-sm">No recent threat check attached. Please scan or check an item first.</p>
         <Link
           to="/"
           className="pill-button-invert inline-block px-6 py-2.5 text-xs uppercase tracking-wider font-bold"
@@ -94,20 +94,20 @@ export default function ReportPage() {
         </button>
 
         <span className="font-mono text-[11px] uppercase tracking-widest text-[#838282]">
-          OFFICIAL DISPATCH
+          CAMPUS SECURITY DISPATCH
         </span>
       </div>
 
       <div>
         <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111]">
-          Report Threat Incident
+          Report a Threat to Security
         </h1>
-        <p className="text-xs text-[#838282] mt-1 leading-relaxed">
-          Submits telemetry payload to campus administration. An immutable SHA-256 evidence digest will be sealed.
+        <p className="text-xs text-[#838282] mt-1.5 leading-relaxed">
+          Reporting suspicious links, stickers, or messages helps campus authorities take down scams and warn other students quickly.
         </p>
 
         <div className="mt-2 text-xs font-mono text-[#838282]">
-          CHECK IDENTIFIER: <code className="text-[#111111] font-bold">{checkId}</code>
+          ATTACHED CHECK ID: <code className="text-[#111111] font-bold">{checkId}</code>
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export default function ReportPage() {
             htmlFor="report-category"
             className="text-xs font-mono uppercase tracking-wider text-[#838282] block"
           >
-            INCIDENT CATEGORY
+            1. WHAT TYPE OF INCIDENT IS THIS?
           </label>
           <select
             id="report-category"
@@ -140,15 +140,15 @@ export default function ReportPage() {
         {/* Severity */}
         <fieldset className="space-y-1.5">
           <legend className="text-xs font-mono uppercase tracking-wider text-[#838282]">
-            SEVERITY ASSESSMENT
+            2. HOW URGENT OR DANGEROUS IS IT?
           </legend>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {SEVERITIES.map((s) => {
               const active = severity === s.value;
               return (
                 <label
                   key={s.value}
-                  className={`flex items-center justify-center p-3 border text-xs font-mono font-bold cursor-pointer transition-colors ${
+                  className={`flex flex-col items-center justify-center p-3 border text-center cursor-pointer transition-colors ${
                     active
                       ? 'bg-[#111111] text-[#f2f2f2] border-[#111111]'
                       : 'bg-[#ffffff] text-[#111111] border-[#1e1e1e]/20 hover:border-[#1e1e1e]/50'
@@ -162,7 +162,10 @@ export default function ReportPage() {
                     onChange={() => setSeverity(s.value)}
                     className="sr-only"
                   />
-                  <span>{s.label}</span>
+                  <span className="text-xs font-mono font-bold">{s.label}</span>
+                  <span className={`text-[9px] mt-0.5 ${active ? 'text-[#b6b5b5]' : 'text-[#838282]'}`}>
+                    {s.hint}
+                  </span>
                 </label>
               );
             })}
@@ -176,7 +179,7 @@ export default function ReportPage() {
               htmlFor="report-note"
               className="text-xs font-mono uppercase tracking-wider text-[#838282]"
             >
-              CONTEXTUAL OBSERVATIONS
+              3. EXTRA CONTEXT <span className="normal-case text-slate-500">(Optional)</span>
             </label>
             <span className="text-xs font-mono text-[#838282]">
               {note.length} / 2000
@@ -187,20 +190,20 @@ export default function ReportPage() {
             rows={4}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Record where physical QR sticker was posted, sender phone handle, or targeted classmates..."
+            placeholder="Tell us where you saw this (e.g. sticker on Science Building 2nd floor, or text message from +91 98xxx)..."
             maxLength={2000}
             className="w-full bg-[#ffffff] border border-[#1e1e1e] p-3 text-xs sm:text-sm text-[#111111] placeholder-[#b6b5b5] focus:outline-none focus:ring-1 focus:ring-[#111111] resize-none leading-relaxed"
           />
         </div>
 
-        {/* Pseudonymous Disclosure */}
+        {/* Anonymous Submission */}
         <div className="p-4 bg-[#ffffff] border border-[#1e1e1e]/20 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-[#111111]">
-              Pseudonymous Disclosure
+              Submit Anonymously
             </p>
             <p className="text-[11px] text-[#838282]">
-              Withholds student identity from administrative incident queue.
+              Your student name and identity will not be shared with campus review staff.
             </p>
           </div>
 
@@ -223,7 +226,7 @@ export default function ReportPage() {
           disabled={loading}
           className="w-full pill-button-invert py-3 px-6 text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40"
         >
-          {loading ? 'Transmitting to Security Ledger…' : 'Submit Formal Incident Dossier →'}
+          {loading ? 'Submitting to security team…' : 'Submit Report to Campus Security →'}
         </button>
       </form>
     </div>

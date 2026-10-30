@@ -1,5 +1,5 @@
 /**
- * ScanPage — Swiss luxury-brutalist optical scanner view.
+ * ScanPage — Optical QR scanner with plain-language guidance.
  */
 import { useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -35,7 +35,7 @@ export default function ScanPage() {
         setError(
           err instanceof Error
             ? err.message
-            : 'Threat evaluation service was unreachable. Please verify backend connection.',
+            : 'We could not connect to the security engine right now. Please check your internet connection or try again shortly.',
         );
         setPageState('scanning');
       }
@@ -63,7 +63,7 @@ export default function ScanPage() {
       void analyseDecodedText(decoded);
     } catch {
       setFallbackDecoding(false);
-      setError('Could not decode a QR code from this image. Please ensure the QR is well-lit and in focus.');
+      setError('We could not detect a QR code in that photo. Please try a clearer, well-lit photo.');
     }
   };
 
@@ -76,26 +76,26 @@ export default function ScanPage() {
           className="inline-flex items-center gap-1.5 text-xs uppercase font-bold tracking-wider text-[#111111] hover:text-[#838282] transition-colors"
         >
           <span>←</span>
-          <span>Return Home</span>
+          <span>Back to Home</span>
         </Link>
         <span className="font-mono text-[11px] uppercase tracking-widest text-[#838282]">
-          LOCAL DECODE
+          PRIVATE ON YOUR DEVICE
         </span>
       </div>
 
       {/* Header */}
       <div>
         <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111]">
-          Optical Scanner
+          Scan a QR Code
         </h1>
-        <p className="text-xs text-[#838282] mt-1 leading-relaxed">
-          Point camera directly at suspicious QR stickers. Processing occurs in-memory; camera frames are never transmitted.
+        <p className="text-xs text-[#838282] mt-1.5 leading-relaxed">
+          Hold your phone camera steady over the QR code. We decode the link directly inside your browser so your photos stay completely private.
         </p>
       </div>
 
       {pageState === 'analysing' && (
         <div className="border border-[#1e1e1e] bg-[#ffffff] p-8 shadow-sm">
-          <Spinner label="EVALUATING DECODED PAYLOAD WITH THREAT MODELS…" />
+          <Spinner label="Checking the link for phishing and scams…" />
         </div>
       )}
 
@@ -112,7 +112,7 @@ export default function ScanPage() {
             onClick={() => setUseFallback(true)}
             className="w-full text-center text-xs font-bold uppercase tracking-wider text-[#111111] hover:text-[#838282] transition-colors py-2 block"
           >
-            Camera restricted? Upload QR image locally →
+            Camera not opening? Upload a photo instead →
           </button>
         </div>
       )}
@@ -122,9 +122,9 @@ export default function ScanPage() {
         <div className="space-y-4">
           <div className="border border-[#1e1e1e] bg-[#ffffff] p-6 text-center space-y-4 shadow-sm">
             <div>
-              <p className="font-clash text-lg font-bold text-[#111111]">Select QR File</p>
-              <p className="text-xs text-[#838282] mt-0.5">
-                Decoded locally via client-side canvas. Zero data uploaded.
+              <p className="font-clash text-lg font-bold text-[#111111]">Upload QR Photo</p>
+              <p className="text-xs text-[#838282] mt-1">
+                Select a screenshot or photo of the QR code from your gallery. It is scanned locally on your device without being uploaded.
               </p>
             </div>
 
@@ -132,7 +132,7 @@ export default function ScanPage() {
               htmlFor="qr-upload"
               className="pill-button-invert px-6 py-2.5 text-xs font-bold uppercase tracking-wider cursor-pointer inline-block"
             >
-              {fallbackFile ? fallbackFile.name : 'Choose Image'}
+              {fallbackFile ? fallbackFile.name : 'Choose Photo from Device'}
               <input
                 id="qr-upload"
                 type="file"
@@ -144,7 +144,7 @@ export default function ScanPage() {
 
             {fallbackDecoding && (
               <div className="pt-2">
-                <Spinner label="DECODING MATRIX LOCALLY…" />
+                <Spinner label="Reading QR code from photo…" />
               </div>
             )}
           </div>
@@ -157,7 +157,7 @@ export default function ScanPage() {
             }}
             className="w-full text-center text-xs font-bold uppercase tracking-wider text-[#111111] hover:text-[#838282] transition-colors"
           >
-            ← Return to live viewfinder
+            ← Switch back to live camera
           </button>
         </div>
       )}
@@ -172,9 +172,10 @@ export default function ScanPage() {
         />
       )}
 
-      {/* Policy Guarantee */}
-      <div className="border-t border-[#1e1e1e]/15 pt-4 text-center text-[11px] font-mono text-[#838282]">
-        ZERO-CRAWL DIRECTIVE: PAYLOADS ARE NEVER VISITED OR LOADED BY BROWSER.
+      {/* Safety Notice */}
+      <div className="border-t border-[#1e1e1e]/15 pt-4 text-center text-[11px] text-[#838282]">
+        <span className="font-bold text-[#111111]">Safety Promise: </span>
+        SignalSafe inspects website addresses safely. It will never open or redirect your browser to an unverified website.
       </div>
     </div>
   );
