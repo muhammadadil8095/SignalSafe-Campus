@@ -1,1 +1,191 @@
 @import "tailwindcss";
+
+/* ─── Swiss Luxury-Brutalist Design System ────────────────────────────── */
+
+:root {
+  --bg-main: #f2f2f2;
+  --text-main: #111111;
+  --text-muted: #838282;
+  --text-light: #b6b5b5;
+  --border-dark: #1e1e1e;
+  --border-hairline: rgba(30, 30, 30, 0.1);
+  --font-clash: 'Clash Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-satoshi: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-satoshi);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Font Utility Classes ────────────────────────────────────────────── */
+.font-clash {
+  font-family: var(--font-clash);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.font-satoshi {
+  font-family: var(--font-satoshi);
+}
+
+.font-editorial-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* ─── The Echo Stack Effect ───────────────────────────────────────────── */
+.echo-stack {
+  position: relative;
+  display: inline-block;
+}
+
+.echo-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-clash);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+.echo-layer-1 {
+  transform: translate(-0.04em, -0.04em);
+  color: #bfbfbf;
+  z-index: 1;
+}
+
+.echo-layer-2 {
+  transform: translate(-0.08em, -0.08em);
+  color: #c9c9c9;
+  z-index: 2;
+}
+
+.echo-layer-3 {
+  transform: translate(-0.12em, -0.12em);
+  color: #d1d1d1;
+  z-index: 3;
+}
+
+.echo-layer-4 {
+  transform: translate(-0.16em, -0.16em);
+  color: #d9d9d9;
+  z-index: 4;
+}
+
+.echo-foreground {
+  position: relative;
+  color: #111111;
+  z-index: 5;
+  font-family: var(--font-clash);
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+
+/* ─── Micro-interactions & Transitions ────────────────────────────────── */
+.ease-editorial {
+  transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+  transition-duration: 700ms;
+}
+
+.hover-grayscale-lift {
+  filter: grayscale(20%);
+  transition: filter 700ms cubic-bezier(0.77, 0, 0.175, 1), transform 700ms cubic-bezier(0.77, 0, 0.175, 1);
+}
+.hover-grayscale-lift:hover {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+/* ─── Rotating Geometric Icon Container (64x64) ───────────────────────── */
+.geometric-icon-box {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(30, 30, 30, 0.15);
+  background-color: #ffffff;
+  transition: transform 300ms cubic-bezier(0.77, 0, 0.175, 1), border-color 300ms ease;
+}
+.card-service:hover .geometric-icon-box {
+  transform: rotate(12deg);
+  border-color: #111111;
+}
+
+/* ─── Bespoke Service Card ────────────────────────────────────────────── */
+.card-service {
+  border: 1px solid rgba(30, 30, 30, 0.1);
+  background-color: transparent;
+  transition: background-color 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+.card-service:hover {
+  background-color: #ffffff;
+  border-color: rgba(30, 30, 30, 0.3);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.08);
+}
+
+/* ─── Pill-shaped Contact/Action Button with Hover Inversion ──────────── */
+.pill-button-invert {
+  border-radius: 9999px;
+  border: 1px solid #1e1e1e;
+  background-color: transparent;
+  color: #111111;
+  transition: all 180ms ease;
+}
+.pill-button-invert:hover {
+  background-color: #111111;
+  color: #f2f2f2;
+}
+
+/* ─── Pill Vertical Showcase ──────────────────────────────────────────── */
+.pill-vertical-container {
+  height: 500px;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(30, 30, 30, 0.15);
+}
+
+.pill-overlay-circle {
+  opacity: 0;
+  transition: opacity 300ms ease, transform 300ms cubic-bezier(0.77, 0, 0.175, 1);
+  transform: scale(0.95);
+}
+.pill-vertical-container:hover .pill-overlay-circle {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── PWA & Layout Adjustments ────────────────────────────────────────── */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 12px);
+}
+
+/* ─── Subtle Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f2f2f2;
+}
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #838282;
+}
