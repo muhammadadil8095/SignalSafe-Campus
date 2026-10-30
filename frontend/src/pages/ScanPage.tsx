@@ -1,8 +1,9 @@
 /**
- * ScanPage — On-device QR camera scanner and local image upload fallback.
+ * ScanPage — Optical QR scanner adhering to Snitch UX execution & evaluation rules.
+ * Transparent privacy disclosure and intuitive fallback options.
  */
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import QRScannerComponent, { decodeQRFromFile } from '../components/QRScanner';
 import ErrorBanner from '../components/ErrorBanner';
 import Spinner from '../components/Spinner';
@@ -35,7 +36,7 @@ export default function ScanPage() {
         setError(
           err instanceof Error
             ? err.message
-            : 'Threat analysis request failed. Please check backend connection.',
+            : 'Threat evaluation service was unreachable. Please verify backend connection.',
         );
         setPageState('scanning');
       }
@@ -63,23 +64,36 @@ export default function ScanPage() {
       void analyseDecodedText(decoded);
     } catch {
       setFallbackDecoding(false);
-      setError('Could not decode a valid QR code from this image. Please ensure the image is clear.');
+      setError('Could not decode a QR code from this image. Please ensure the QR is well-lit and in focus.');
     }
   };
 
   return (
     <div className="max-w-sm mx-auto space-y-5">
-      {/* Header */}
+      {/* Navigation Lifeboat */}
+      <div className="flex items-center justify-between">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          Back to Dashboard
+        </Link>
+        <span className="text-[11px] font-mono text-slate-500">Local Decode</span>
+      </div>
+
       <div>
         <h1 className="text-xl font-bold text-white">QR Code Scanner</h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Camera frames are decoded locally in your browser and never uploaded.
+        <p className="text-xs text-slate-400 mt-0.5">
+          Decoded entirely on this device in memory. Camera images are never transmitted or stored.
         </p>
       </div>
 
       {pageState === 'analysing' && (
         <div className="card-clean rounded-xl p-8">
-          <Spinner label="Evaluating target URL with detection engine…" />
+          <Spinner label="Evaluating extracted URL with threat models…" />
         </div>
       )}
 
@@ -96,12 +110,12 @@ export default function ScanPage() {
             onClick={() => setUseFallback(true)}
             className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors py-2"
           >
-            Camera restricted? Upload an image instead →
+            Camera unavailable? Upload QR screenshot locally →
           </button>
         </div>
       )}
 
-      {/* Fallback File Upload */}
+      {/* Image upload fallback */}
       {useFallback && pageState !== 'analysing' && (
         <div className="space-y-3">
           <div className="card-clean rounded-xl p-6 text-center space-y-3">
@@ -112,17 +126,17 @@ export default function ScanPage() {
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-white">Inspect QR Image</p>
+              <p className="text-sm font-semibold text-white">Select QR Image</p>
               <p className="text-xs text-slate-400 mt-0.5">
-                Decoded completely in-browser without server upload.
+                Processed locally via Canvas & WASM.
               </p>
             </div>
 
             <label
               htmlFor="qr-upload"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium cursor-pointer transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold cursor-pointer transition-colors"
             >
-              {fallbackFile ? fallbackFile.name : 'Select Image File'}
+              {fallbackFile ? fallbackFile.name : 'Choose File'}
               <input
                 id="qr-upload"
                 type="file"
@@ -134,7 +148,7 @@ export default function ScanPage() {
 
             {fallbackDecoding && (
               <div className="pt-2">
-                <Spinner label="Decoding QR matrix locally…" />
+                <Spinner label="Decoding matrix in local memory…" />
               </div>
             )}
           </div>
@@ -147,7 +161,7 @@ export default function ScanPage() {
             }}
             className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors"
           >
-            ← Back to camera viewfinder
+            ← Return to live camera viewfinder
           </button>
         </div>
       )}
@@ -162,9 +176,10 @@ export default function ScanPage() {
         />
       )}
 
-      <div className="rounded-lg bg-slate-900 border border-slate-800 p-3 text-center text-[11px] text-slate-400">
-        <p className="font-semibold text-slate-300">Safe Inspection Guarantee</p>
-        <p className="mt-0.5">The application never automatically visits or opens the extracted link.</p>
+      {/* Safety Policy */}
+      <div className="card-subtle rounded-lg p-3 text-center text-[11px] text-slate-400">
+        <span className="font-semibold text-slate-300">Safety Guarantee: </span>
+        The app checks threat patterns without ever executing redirects or loading destination websites.
       </div>
     </div>
   );

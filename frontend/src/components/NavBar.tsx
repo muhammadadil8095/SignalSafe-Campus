@@ -1,3 +1,9 @@
+/**
+ * NavBar — Mobile-first bottom navigation conforming to Snitch UX standards:
+ * - 48px+ touch targets for accessibility conformance
+ * - Unambiguous signifiers and active states
+ * - Standard mobile convention (Home, Scan, Check, Admin)
+ */
 import { NavLink } from 'react-router-dom';
 
 const LINKS = [
@@ -22,7 +28,7 @@ const LINKS = [
   },
   {
     to: '/check',
-    label: 'Check Text',
+    label: 'Check Input',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8} aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
@@ -53,20 +59,20 @@ export default function NavBar() {
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `flex flex-col items-center py-2.5 px-1 gap-1 text-xs font-medium transition-colors ${
+                `flex flex-col items-center justify-center min-h-[52px] py-2 px-1 gap-1 text-xs font-medium transition-colors ${
                   isActive
-                    ? 'text-blue-400'
+                    ? 'text-blue-400 font-semibold'
                     : 'text-slate-400 hover:text-slate-200'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={`transition-transform duration-150 ${isActive ? 'scale-105' : ''}`}>
+                  <div className={`transition-transform duration-100 ${isActive ? 'scale-105 text-blue-400' : 'text-slate-400'}`}>
                     {link.icon}
                   </div>
-                  <span className="text-[11px]">{link.label}</span>
-                  {isActive && <span className="sr-only">(current page)</span>}
+                  <span className="text-[11px] leading-tight">{link.label}</span>
+                  {isActive && <span className="sr-only">(active page)</span>}
                 </>
               )}
             </NavLink>

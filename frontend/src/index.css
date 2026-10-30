@@ -1,57 +1,75 @@
 @import "tailwindcss";
 
-/* ─── Professional Institutional Theme ─────────────────────────────────── */
+/* ─── Snitch UX: Clarity-First Institutional Substrate ─────────────────── */
+/* Designed against Norman's Gulf of Execution/Evaluation & Krug's First Law */
+
 :root {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --color-bg-base: #090d16;
+  --color-surface-card: #0f172a;
+  --color-surface-subtle: #131d35;
+  --color-border: #1e293b;
+  --color-border-hover: #334155;
+  --color-border-focus: #3b82f6;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
 body {
-  background-color: #090d16;
+  background-color: var(--color-bg-base);
   color: #f1f5f9;
   font-family: var(--font-sans);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Clean Card Surfaces ──────────────────────────────────────────────── */
+/* ─── Bounded Semantic Cards ─────────────────────────────────────────── */
 .card-clean {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
 }
 
 .card-subtle {
   background-color: #0b1120;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--color-border);
 }
 
 .card-interactive {
-  background-color: #0f172a;
-  border: 1px solid #1e293b;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  background-color: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .card-interactive:hover {
-  background-color: #131d35;
-  border-color: #334155;
+  background-color: var(--color-surface-subtle);
+  border-color: var(--color-border-hover);
+  transform: translateY(-1px);
+}
+.card-interactive:active {
+  transform: translateY(0);
 }
 
-/* ─── Subtle Dot Grid Background ──────────────────────────────────────── */
+/* ─── Background Mesh Pattern ─────────────────────────────────────────── */
 .bg-grid {
   background-color: #090d16;
-  background-image: radial-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(71, 85, 105, 0.25) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* ─── Professional Buttons ─────────────────────────────────────────────── */
+/* ─── Clear Functional Buttons ────────────────────────────────────────── */
 .btn-primary {
   background-color: #2563eb;
   color: #ffffff;
-  font-weight: 500;
-  transition: background-color 0.15s ease;
+  font-weight: 600;
+  border: 1px solid #3b82f6;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  transition: all 0.15s ease;
 }
 .btn-primary:hover:not(:disabled) {
   background-color: #1d4ed8;
+  border-color: #2563eb;
 }
 .btn-primary:active:not(:disabled) {
   background-color: #1e40af;
@@ -62,33 +80,33 @@ body {
   border: 1px solid #334155;
   color: #e2e8f0;
   font-weight: 500;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: all 0.15s ease;
 }
 .btn-secondary:hover:not(:disabled) {
-  background-color: #334155;
+  background-color: #283548;
   border-color: #475569;
 }
 
-/* ─── Professional Status Badges ───────────────────────────────────────── */
-.badge-green {
-  background-color: rgba(16, 185, 129, 0.1);
+/* ─── Status Tags with High Information Value ─────────────────────────── */
+.badge-legitimate {
+  background-color: rgba(16, 185, 129, 0.12);
   color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.badge-amber {
-  background-color: rgba(245, 158, 11, 0.1);
+.badge-suspicious {
+  background-color: rgba(245, 158, 11, 0.12);
   color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.badge-red {
-  background-color: rgba(239, 68, 68, 0.1);
+.badge-highrisk {
+  background-color: rgba(239, 68, 68, 0.12);
   color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* ─── Safe Area for PWA ───────────────────────────────────────────────── */
+/* ─── Safe Area for Mobile Browsers & PWA ──────────────────────────────── */
 .pb-safe {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
 }
@@ -96,18 +114,18 @@ body {
   padding-top: max(env(safe-area-inset-top, 0px), 12px);
 }
 
-/* ─── Refined Scrollbars ──────────────────────────────────────────────── */
+/* ─── Scrollbars ──────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #2d3b52;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #3b4e6d;
 }
