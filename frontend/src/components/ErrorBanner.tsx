@@ -1,5 +1,5 @@
 /**
- * ErrorBanner — accessible glass danger card with subtle neon red aura and retry action.
+ * ErrorBanner — Professional inline alert container.
  */
 interface Props {
   message: string;
@@ -10,15 +10,11 @@ export default function ErrorBanner({ message, onRetry }: Props) {
   return (
     <div
       role="alert"
-      className="relative overflow-hidden rounded-2xl bg-red-950/30 border border-red-500/25 p-4 backdrop-blur-md shadow-lg shadow-red-950/40 flex items-start gap-3.5 float-in"
+      className="rounded-xl bg-red-950/40 border border-red-800/60 p-4 flex items-start gap-3 text-red-200"
     >
-      {/* Specular edge */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-red-400/40 to-transparent" />
-
-      {/* Icon badge */}
-      <div className="w-8 h-8 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0 mt-0.5 text-red-400">
+      <div className="w-5 h-5 rounded flex items-center justify-center shrink-0 mt-0.5 text-red-400">
         <svg
-          className="w-4 h-4"
+          className="w-5 h-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -34,28 +30,15 @@ export default function ErrorBanner({ message, onRetry }: Props) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-red-200 text-xs sm:text-sm font-medium leading-relaxed">
+        <p className="text-xs sm:text-sm font-medium leading-relaxed">
           {message}
         </p>
         {onRetry && (
           <button
             onClick={onRetry}
-            className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded-md"
+            className="mt-2 text-xs font-semibold text-red-400 hover:text-red-300 underline focus:outline-none focus:ring-1 focus:ring-red-400 rounded"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-              />
-            </svg>
-            Retry action
+            Retry request
           </button>
         )}
       </div>

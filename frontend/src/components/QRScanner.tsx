@@ -1,12 +1,10 @@
 /**
- * QRScanner — on-device QR code decoding using the Nimiq qr-scanner library.
+ * QRScanner — On-device QR code decoding using the Nimiq qr-scanner library.
  *
- * Security rules enforced here:
+ * Security rules:
  * - QR image data NEVER leaves the device.
  * - Only the decoded text payload is forwarded for analysis.
- * - No screenshot, upload, or network transfer of camera frames.
- *
- * Styled with high-tech HUD reticles and animated laser sweep.
+ * - Clean, non-distracting professional viewfinder.
  */
 import { useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
@@ -42,7 +40,6 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
     const scanner = new QrScanner(
       videoRef.current,
       (result) => {
-        // Security boundary: Only decoded string forwarded
         onResult(result.data);
       },
       {
@@ -67,11 +64,11 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
         ) {
           updateState('denied');
           setErrorMsg(
-            'Camera permission was blocked. Allow camera access in your browser settings to scan in real-time.',
+            'Camera permission was denied. Please allow camera access in your browser settings to scan QR codes.',
           );
         } else {
           updateState('error');
-          setErrorMsg(`Optical viewfinder unavailable: ${msg}`);
+          setErrorMsg(`Camera unavailable: ${msg}`);
         }
       });
 
@@ -83,7 +80,7 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
   }, []);
 
   return (
-    <div className="relative w-full max-w-sm mx-auto aspect-square rounded-3xl overflow-hidden glass-strong border border-white/10 shadow-2xl group">
+    <div className="relative w-full max-w-sm mx-auto aspect-square rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
       {/* Live camera stream */}
       <video
         ref={videoRef}
@@ -93,95 +90,59 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
         muted
       />
 
-      {/* Cybernetic HUD overlay */}
-      <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-6">
-        {/* Top HUD status */}
-        <div className="flex items-center justify-between text-[11px] font-mono tracking-wider">
-          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/70 border border-white/10 text-cyan-300 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            LIVE TELEMETRY
+      {/* Clean Viewfinder Guide */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-5">
+        <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900/90 border border-slate-700">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            Active Viewfinder
           </span>
-          <span className="px-2.5 py-1 rounded-full bg-slate-950/70 border border-white/10 text-slate-400 backdrop-blur-md">
-            LOCAL ENGINE
+          <span className="px-2.5 py-1 rounded bg-slate-900/90 border border-slate-700 font-mono text-[10px]">
+            On-Device Decode
           </span>
         </div>
 
-        {/* Central Target Reticle */}
-        <div className="relative self-center w-52 h-52 flex items-center justify-center">
-          {/* Corner brackets */}
-          <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-cyan-400 rounded-tl-lg shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-          <div className="absolute -top-1 -right-1 w-6 h-6 border-t-2 border-r-2 border-cyan-400 rounded-tr-lg shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-          <div className="absolute -bottom-1 -left-1 w-6 h-6 border-b-2 border-l-2 border-cyan-400 rounded-bl-lg shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-cyan-400 rounded-br-lg shadow-[0_0_8px_rgba(34,211,238,0.6)]" />
-
-          {/* Animated laser line */}
-          {state === 'scanning' && (
-            <div className="absolute inset-x-2 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_12px_rgba(34,211,238,0.9)] animate-bounce" />
-          )}
-
-          {/* Central target crosshair */}
-          <div className="w-2 h-2 rounded-full border border-cyan-400/50" />
+        {/* Framing Corners */}
+        <div className="relative self-center w-48 h-48 flex items-center justify-center">
+          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-slate-300 rounded-tl" />
+          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-slate-300 rounded-tr" />
+          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-slate-300 rounded-bl" />
+          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-slate-300 rounded-br" />
         </div>
 
-        {/* Bottom indicator */}
         <div className="text-center">
-          <span className="inline-block text-[11px] font-medium text-slate-300 bg-slate-950/80 px-3 py-1 rounded-full border border-white/10 backdrop-blur-md shadow-lg">
-            Align QR code within reticle
+          <span className="inline-block text-xs font-medium text-slate-300 bg-slate-900/90 px-3 py-1 rounded border border-slate-700">
+            Point camera directly at QR code
           </span>
         </div>
       </div>
 
-      {/* Requesting State */}
+      {/* Loading state */}
       {state === 'requesting' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md p-6 text-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 animate-pulse">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-            </svg>
-          </div>
-          <p className="text-sm font-medium text-slate-200">
-            Initialising optical sensor…
-          </p>
-          <p className="text-xs text-slate-400 max-w-xs">
-            Zero frame retention: camera data is decoded exclusively in-memory.
-          </p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-6 text-center gap-2">
+          <div className="w-6 h-6 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin" />
+          <p className="text-xs text-slate-300 font-medium">Initializing camera…</p>
         </div>
       )}
 
-      {/* Permission Denied or Error State */}
+      {/* Error state */}
       {(state === 'denied' || state === 'error') && (
         <div
           role="alert"
-          className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md p-6 text-center gap-3.5"
+          className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/95 p-6 text-center gap-3"
         >
-          <div className="w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shadow-lg shadow-red-500/20">
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              strokeWidth={1.8}
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-              />
+          <div className="w-10 h-10 rounded-full bg-red-950/50 border border-red-800 flex items-center justify-center text-red-400">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z" />
             </svg>
           </div>
-          <p className="text-sm font-semibold text-red-300">{errorMsg}</p>
-          <p className="text-xs text-slate-400">
-            Use the cryptographic image upload fallback below to inspect any QR code offline.
-          </p>
+          <p className="text-xs text-red-300 font-medium leading-relaxed max-w-xs">{errorMsg}</p>
         </div>
       )}
     </div>
   );
 }
 
-// ── Fallback: decode a QR from an uploaded image file ────────────────────────
-// Decoded entirely in-browser memory via WASM/Canvas. Never uploaded.
 export async function decodeQRFromFile(file: File): Promise<string> {
   const result = await QrScanner.scanImage(file, { returnDetailedScanResult: true });
   return result.data;

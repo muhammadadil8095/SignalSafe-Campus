@@ -1,9 +1,5 @@
 /**
- * ScanPage — on-device QR scanning interface.
- * Security contract enforced:
- * - QR image data stays on device (enforced by QRScanner component).
- * - Only decoded text is sent to the backend for analysis.
- * - Fallback: upload a QR image for local decode (no image leaves device).
+ * ScanPage — On-device QR camera scanner and local image upload fallback.
  */
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -39,7 +35,7 @@ export default function ScanPage() {
         setError(
           err instanceof Error
             ? err.message
-            : 'Threat engine analysis failed. Check your network or backend status.',
+            : 'Threat analysis request failed. Please check backend connection.',
         );
         setPageState('scanning');
       }
@@ -67,30 +63,28 @@ export default function ScanPage() {
       void analyseDecodedText(decoded);
     } catch {
       setFallbackDecoding(false);
-      setError('Unable to parse QR matrix from selected photo. Ensure adequate lighting and focus.');
+      setError('Could not decode a valid QR code from this image. Please ensure the image is clear.');
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto space-y-6 float-in">
+    <div className="max-w-sm mx-auto space-y-5">
       {/* Header */}
-      <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
-          <span>Optical QR Radar</span>
-        </h1>
-        <p className="text-xs text-slate-400">
-          Decoded in-memory on this device. No camera frames are stored or transmitted.
+      <div>
+        <h1 className="text-xl font-bold text-white">QR Code Scanner</h1>
+        <p className="text-xs text-slate-400 mt-1">
+          Camera frames are decoded locally in your browser and never uploaded.
         </p>
       </div>
 
       {pageState === 'analysing' && (
-        <div className="rounded-3xl glass p-8">
-          <Spinner label="Executing lexical threat extraction…" />
+        <div className="card-clean rounded-xl p-8">
+          <Spinner label="Evaluating target URL with detection engine…" />
         </div>
       )}
 
       {(pageState === 'scanning' || pageState === 'done') && !useFallback && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <QRScannerComponent
             onResult={handleQRResult}
             onStateChange={(s) => {
@@ -100,37 +94,35 @@ export default function ScanPage() {
 
           <button
             onClick={() => setUseFallback(true)}
-            className="w-full text-center text-xs text-slate-400 hover:text-cyan-300 transition-colors py-2 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors py-2"
           >
-            Camera restricted? Upload QR snapshot locally →
+            Camera restricted? Upload an image instead →
           </button>
         </div>
       )}
 
-      {/* Image upload fallback */}
+      {/* Fallback File Upload */}
       {useFallback && pageState !== 'analysing' && (
-        <div className="space-y-4">
-          <div className="rounded-3xl glass-strong border border-dashed border-white/20 p-6 text-center space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
+        <div className="space-y-3">
+          <div className="card-clean rounded-xl p-6 text-center space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-white">
-                Inspect Stored QR Screenshot
-              </p>
-              <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
-                File is processed solely through local WebAssembly rendering.
+              <p className="text-sm font-semibold text-white">Inspect QR Image</p>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Decoded completely in-browser without server upload.
               </p>
             </div>
 
             <label
               htmlFor="qr-upload"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-xs font-semibold cursor-pointer transition-all shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium cursor-pointer transition-colors"
             >
-              {fallbackFile ? fallbackFile.name : 'Choose Image File'}
+              {fallbackFile ? fallbackFile.name : 'Select Image File'}
               <input
                 id="qr-upload"
                 type="file"
@@ -142,7 +134,7 @@ export default function ScanPage() {
 
             {fallbackDecoding && (
               <div className="pt-2">
-                <Spinner label="Executing in-browser matrix decode…" />
+                <Spinner label="Decoding QR matrix locally…" />
               </div>
             )}
           </div>
@@ -153,9 +145,9 @@ export default function ScanPage() {
               setFallbackFile(null);
               setError('');
             }}
-            className="w-full text-center text-xs text-slate-400 hover:text-white transition-colors"
+            className="w-full text-center text-xs text-slate-400 hover:text-slate-200 transition-colors"
           >
-            ← Return to live optical scanner
+            ← Back to camera viewfinder
           </button>
         </div>
       )}
@@ -170,10 +162,9 @@ export default function ScanPage() {
         />
       )}
 
-      {/* Safety assurance footer */}
-      <div className="p-3.5 rounded-2xl bg-slate-950/40 border border-white/5 text-center text-[11px] text-slate-500 space-y-1">
-        <p className="font-mono text-cyan-400/80">NO REDIRECT POLICY</p>
-        <p>The scanner will inspect threat markers without ever navigating your browser to the URL.</p>
+      <div className="rounded-lg bg-slate-900 border border-slate-800 p-3 text-center text-[11px] text-slate-400">
+        <p className="font-semibold text-slate-300">Safe Inspection Guarantee</p>
+        <p className="mt-0.5">The application never automatically visits or opens the extracted link.</p>
       </div>
     </div>
   );
