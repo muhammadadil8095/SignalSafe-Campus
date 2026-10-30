@@ -1,7 +1,7 @@
 /**
  * VerdictCard — Clear, comprehensive, and easy-to-understand threat breakdown.
  */
-import type { AnalysisResponse } from '../../types/api';
+import type { AnalysisResponse } from '../types/api';
 import RiskBadge from './RiskBadge';
 
 interface Props {

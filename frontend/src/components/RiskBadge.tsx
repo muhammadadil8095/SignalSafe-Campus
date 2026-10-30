@@ -2,7 +2,7 @@
  * RiskBadge — Swiss luxury-brutalist editorial risk pill.
  * High contrast monochromatic aesthetic with clear categorical distinction.
  */
-import type { RiskLevel } from '../../types/api';
+import type { RiskLevel } from '../types/api';
 
 interface Props {
   risk: RiskLevel;
