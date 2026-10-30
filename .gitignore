@@ -218,3 +218,45 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ============================================================
+# SignalSafe Campus — Project-Specific
+# ============================================================
+
+# Environment files
+.env.local
+.env.production
+.env.development
+
+# Security keys and certificates
+*.pem
+*.key
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Python / Backend
+.venv/
+
+# ML artifacts — do not commit large datasets or model files
+ml/datasets/*.csv
+ml/datasets/*.json
+ml/datasets/*.parquet
+ml/datasets/*.zip
+ml/datasets/*.gz
+*.pkl
+*.joblib
+*.h5
+*.onnx
+ml/training/models/
+ml/training/outputs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

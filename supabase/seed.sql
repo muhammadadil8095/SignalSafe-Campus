@@ -1,0 +1,19 @@
+-- =============================================================================
+-- SignalSafe Campus - Development Seed Data
+-- =============================================================================
+-- This file will contain sample data for local development and testing.
+-- Do not include production data or real credentials.
+--
+-- Usage:
+--   Run this file against your local Supabase database after applying
+--   all migrations to populate tables with test data.
+--
+-- Contents (to be added during platform module phase):
+--   - Sample official campus domains
+--   - Test analysis check results
+--   - Example incident reports
+--   - Demo audit log entries
+--
+-- WARNING: This data is for development only. Never use real user data,
+--          real credentials, or production secrets in this file.
+-- =============================================================================
