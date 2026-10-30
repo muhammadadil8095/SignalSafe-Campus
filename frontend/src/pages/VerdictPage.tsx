@@ -1,5 +1,5 @@
 /**
- * VerdictPage — displays backend analysis result.
+ * VerdictPage — displays backend analysis result with high-end telemetry presentation.
  * Navigated to by ScanPage and CheckPage via router state.
  */
 import { useLocation, useNavigate, Link } from 'react-router-dom';
@@ -18,13 +18,18 @@ export default function VerdictPage() {
 
   if (!state?.result) {
     return (
-      <div className="max-w-sm mx-auto text-center py-16 space-y-4">
-        <p className="text-slate-400">No analysis result to display.</p>
+      <div className="max-w-sm mx-auto text-center py-20 space-y-4 float-in">
+        <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center mx-auto text-slate-500">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+          </svg>
+        </div>
+        <p className="text-slate-400 text-sm">No analysis dossier active in memory.</p>
         <Link
           to="/"
-          className="text-blue-400 underline text-sm hover:text-blue-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+          className="inline-block px-4 py-2 rounded-xl glass border border-white/10 text-cyan-400 text-xs font-semibold hover:border-cyan-400/40 transition-colors"
         >
-          Go home
+          Return to Dashboard
         </Link>
       </div>
     );
@@ -39,41 +44,47 @@ export default function VerdictPage() {
   const backPath = state.source === 'qr' ? '/scan' : '/check';
 
   return (
-    <div className="max-w-lg mx-auto space-y-5">
-      {/* Back link */}
-      <button
-        onClick={() => navigate(backPath)}
-        className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-        </svg>
-        Back
-      </button>
+    <div className="max-w-lg mx-auto space-y-6 float-in">
+      {/* Top Navigation */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={() => navigate(backPath)}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors px-3 py-1.5 rounded-xl glass border border-white/5"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+          Back to Inspector
+        </button>
 
-      <h1 className="text-xl font-bold text-white">Analysis Result</h1>
+        <span className="text-[11px] font-mono text-cyan-400 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          VERDICT VERIFIED
+        </span>
+      </div>
 
+      {/* Main Result Card */}
       <VerdictCard result={result} onReport={handleReport} />
 
-      {/* Scan another */}
-      <div className="flex gap-3 pt-2">
+      {/* Next Actions */}
+      <div className="grid grid-cols-2 gap-3 pt-2">
         <Link
           to="/scan"
-          className="flex-1 text-center text-xs px-3 py-2 rounded-xl border border-slate-700/50 text-slate-400 hover:bg-slate-800/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="text-center text-xs font-medium py-3 px-3 rounded-2xl glass border border-white/10 text-slate-300 hover:text-white hover:border-cyan-400/40 transition-all shadow-md"
         >
-          Scan another QR
+          Scan Another QR
         </Link>
         <Link
           to="/check"
-          className="flex-1 text-center text-xs px-3 py-2 rounded-xl border border-slate-700/50 text-slate-400 hover:bg-slate-800/40 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          className="text-center text-xs font-medium py-3 px-3 rounded-2xl glass border border-white/10 text-slate-300 hover:text-white hover:border-indigo-400/40 transition-all shadow-md"
         >
-          Check another item
+          Inspect Another Item
         </Link>
       </div>
 
-      {/* Privacy note */}
-      <p className="text-xs text-slate-600 text-center">
-        Risk scores come from the backend. Scan data is not stored unless you submit a report.
+      {/* Audit Notice */}
+      <p className="text-[11px] text-slate-500 text-center font-mono">
+        All verdicts generated securely by centralized XGBoost/Rule pipeline.
       </p>
     </div>
   );

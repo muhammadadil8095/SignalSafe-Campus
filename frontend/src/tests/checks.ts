@@ -205,3 +205,4 @@ export const MANUAL_CHECKS = [
 
 // Export so the checks can be imported in a future test runner
 export default MANUAL_CHECKS;
+

@@ -59,3 +59,4 @@ if __name__ == "__main__":
     for sz in (192, 512):
         make_png(sz, os.path.join(base, f"icon-{sz}.png"))
     print("Done.")
+

@@ -1,7 +1,6 @@
 /**
- * ScanPage — on-device QR scanning.
- *
- * Security contract:
+ * ScanPage — on-device QR scanning interface.
+ * Security contract enforced:
  * - QR image data stays on device (enforced by QRScanner component).
  * - Only decoded text is sent to the backend for analysis.
  * - Fallback: upload a QR image for local decode (no image leaves device).
@@ -35,11 +34,12 @@ export default function ScanPage() {
           language: 'en',
           channel: 'pwa',
         });
-        // Navigate to verdict page, passing result via state.
         navigate('/verdict', { state: { result, source: 'qr' } });
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Analysis failed. Please try again.',
+          err instanceof Error
+            ? err.message
+            : 'Threat engine analysis failed. Check your network or backend status.',
         );
         setPageState('scanning');
       }
@@ -47,16 +47,14 @@ export default function ScanPage() {
     [navigate],
   );
 
-  // Called once per successful QR decode from camera.
   const handleQRResult = useCallback(
     (decodedText: string) => {
-      if (pageState !== 'scanning') return; // ignore subsequent frames
+      if (pageState !== 'scanning') return;
       void analyseDecodedText(decodedText);
     },
     [pageState, analyseDecodedText],
   );
 
-  // Fallback: user uploads a QR image; decode happens locally.
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -69,58 +67,70 @@ export default function ScanPage() {
       void analyseDecodedText(decoded);
     } catch {
       setFallbackDecoding(false);
-      setError('Could not decode a QR code from that image. Try a clearer photo.');
+      setError('Unable to parse QR matrix from selected photo. Ensure adequate lighting and focus.');
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-white">Scan QR Code</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          QR image stays on your device — only the decoded content is analysed.
+    <div className="max-w-sm mx-auto space-y-6 float-in">
+      {/* Header */}
+      <div className="text-center space-y-1">
+        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center justify-center gap-2">
+          <span>Optical QR Radar</span>
+        </h1>
+        <p className="text-xs text-slate-400">
+          Decoded in-memory on this device. No camera frames are stored or transmitted.
         </p>
       </div>
 
       {pageState === 'analysing' && (
-        <div className="flex justify-center py-10">
-          <Spinner label="Analysing…" />
+        <div className="rounded-3xl glass p-8">
+          <Spinner label="Executing lexical threat extraction…" />
         </div>
       )}
 
       {(pageState === 'scanning' || pageState === 'done') && !useFallback && (
-        <>
+        <div className="space-y-4">
           <QRScannerComponent
             onResult={handleQRResult}
             onStateChange={(s) => {
               if (s === 'denied' || s === 'error') setUseFallback(true);
             }}
           />
+
           <button
             onClick={() => setUseFallback(true)}
-            className="w-full text-xs text-slate-500 underline hover:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+            className="w-full text-center text-xs text-slate-400 hover:text-cyan-300 transition-colors py-2 rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
-            Camera not working? Upload a QR image instead
+            Camera restricted? Upload QR snapshot locally →
           </button>
-        </>
+        </div>
       )}
 
       {/* Image upload fallback */}
       {useFallback && pageState !== 'analysing' && (
         <div className="space-y-4">
-          <div className="rounded-2xl bg-slate-800/50 border border-slate-700/40 p-5 text-center space-y-3">
-            <p className="text-slate-300 text-sm">
-              Upload a photo of the QR code. The image is decoded entirely on your
-              device — it is never uploaded to our servers.
-            </p>
-            <label
-              htmlFor="qr-upload"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium cursor-pointer transition-colors duration-200 focus-within:ring-2 focus-within:ring-blue-500"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
+          <div className="rounded-3xl glass-strong border border-dashed border-white/20 p-6 text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto text-cyan-400">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
               </svg>
-              {fallbackFile ? fallbackFile.name : 'Choose QR image'}
+            </div>
+
+            <div>
+              <p className="text-sm font-semibold text-white">
+                Inspect Stored QR Screenshot
+              </p>
+              <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+                File is processed solely through local WebAssembly rendering.
+              </p>
+            </div>
+
+            <label
+              htmlFor="qr-upload"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 text-xs font-semibold cursor-pointer transition-all shadow-lg"
+            >
+              {fallbackFile ? fallbackFile.name : 'Choose Image File'}
               <input
                 id="qr-upload"
                 type="file"
@@ -129,17 +139,23 @@ export default function ScanPage() {
                 onChange={handleFileChange}
               />
             </label>
-            {fallbackDecoding && <Spinner label="Decoding QR…" />}
+
+            {fallbackDecoding && (
+              <div className="pt-2">
+                <Spinner label="Executing in-browser matrix decode…" />
+              </div>
+            )}
           </div>
+
           <button
             onClick={() => {
               setUseFallback(false);
               setFallbackFile(null);
               setError('');
             }}
-            className="w-full text-xs text-slate-500 underline hover:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+            className="w-full text-center text-xs text-slate-400 hover:text-white transition-colors"
           >
-            Try camera again
+            ← Return to live optical scanner
           </button>
         </div>
       )}
@@ -154,11 +170,11 @@ export default function ScanPage() {
         />
       )}
 
-      {/* Security notice */}
-      <p className="text-xs text-slate-600 text-center">
-        This tool analyses threat indicators only. Never enter credentials after
-        scanning an unknown QR code.
-      </p>
+      {/* Safety assurance footer */}
+      <div className="p-3.5 rounded-2xl bg-slate-950/40 border border-white/5 text-center text-[11px] text-slate-500 space-y-1">
+        <p className="font-mono text-cyan-400/80">NO REDIRECT POLICY</p>
+        <p>The scanner will inspect threat markers without ever navigating your browser to the URL.</p>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 /**
- * ReportPage — submit a security incident report.
- * Linked from VerdictPage; carries check_id via router state.
- * Evidence upload uses approved private-storage flow (backend handles SHA-256).
+ * ReportPage — submit a formal campus threat incident dossier.
+ * Carries check_id from VerdictPage to ensure end-to-end evidence chain.
+ * Styled with frosted glass cards and tactile selection pills.
  */
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,19 +14,19 @@ interface LocationState {
   risk: RiskLevel;
 }
 
-const CATEGORIES: { value: ReportCategory; label: string }[] = [
-  { value: 'phishing', label: 'Phishing / fake login' },
-  { value: 'qr', label: 'Malicious QR code' },
-  { value: 'payment', label: 'Payment / UPI fraud' },
-  { value: 'bullying', label: 'Cyberbullying / harassment' },
-  { value: 'other', label: 'Other' },
+const CATEGORIES: { value: ReportCategory; label: string; desc: string }[] = [
+  { value: 'phishing', label: 'Credential Phishing', desc: 'Counterfeit campus login portals or identity theft.' },
+  { value: 'qr', label: 'Physical Malicious QR', desc: 'Tampered exam fee, library or cafeteria QR stickers.' },
+  { value: 'payment', label: 'Financial / UPI Fraud', desc: 'Direct VPA transfer coercion or fake stipend requests.' },
+  { value: 'bullying', label: 'Harassment / Threats', desc: 'Hostile intimidation on student groups or forums.' },
+  { value: 'other', label: 'Unclassified Threat', desc: 'Novel suspicious vector or anomaly.' },
 ];
 
-const SEVERITIES: { value: ReportSeverity; label: string; color: string }[] = [
-  { value: 'low', label: 'Low', color: 'text-emerald-400' },
-  { value: 'medium', label: 'Medium', color: 'text-amber-400' },
-  { value: 'high', label: 'High', color: 'text-orange-400' },
-  { value: 'critical', label: 'Critical', color: 'text-red-400' },
+const SEVERITIES: { value: ReportSeverity; label: string; ring: string; color: string }[] = [
+  { value: 'low', label: 'Low', ring: 'peer-checked:border-emerald-400 peer-checked:bg-emerald-950/40', color: 'text-emerald-400' },
+  { value: 'medium', label: 'Medium', ring: 'peer-checked:border-amber-400 peer-checked:bg-amber-950/40', color: 'text-amber-400' },
+  { value: 'high', label: 'High', ring: 'peer-checked:border-orange-500 peer-checked:bg-orange-950/40', color: 'text-orange-400' },
+  { value: 'critical', label: 'Critical', ring: 'peer-checked:border-rose-500 peer-checked:bg-rose-950/40', color: 'text-rose-400' },
 ];
 
 export default function ReportPage() {
@@ -60,7 +60,9 @@ export default function ReportPage() {
       navigate('/report-confirm', { state: { report: result } });
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to submit report. Please try again.',
+        err instanceof Error
+          ? err.message
+          : 'Unable to submit incident report. Verify network connection.',
       );
     } finally {
       setLoading(false);
@@ -69,76 +71,88 @@ export default function ReportPage() {
 
   if (!checkId) {
     return (
-      <div className="max-w-sm mx-auto text-center py-16 space-y-4">
-        <p className="text-slate-400">No analysis result linked. Please analyse something first.</p>
+      <div className="max-w-sm mx-auto text-center py-20 space-y-4 float-in">
+        <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-center mx-auto text-slate-500">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+          </svg>
+        </div>
+        <p className="text-slate-400 text-sm">No threat check attached to this session.</p>
         <button
           onClick={() => navigate('/')}
-          className="text-blue-400 underline text-sm hover:text-blue-300"
+          className="px-4 py-2 rounded-xl glass border border-white/10 text-cyan-400 text-xs font-semibold"
         >
-          Go home
+          Return Home
         </button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
+    <div className="max-w-lg mx-auto space-y-6 float-in">
+      {/* Header */}
       <div>
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-300 mb-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors mb-3 px-3 py-1.5 rounded-xl glass border border-white/5"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} aria-hidden="true">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
           </svg>
           Back
         </button>
-        <h1 className="text-xl font-bold text-white">Report a Threat</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Reporting helps protect others. Your report is linked to the scan result.
+
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          Submit Incident Report
+        </h1>
+        <p className="text-xs text-slate-400 mt-1">
+          Escalate to authorized campus security administrators with preserved forensic evidence.
         </p>
-        <p className="text-xs text-slate-600 mt-1">
-          Check ID: <code className="text-slate-500">{checkId}</code>
-        </p>
+
+        <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-slate-950/60 border border-white/5 text-[11px] font-mono text-cyan-400">
+          <span>Target Check:</span>
+          <code className="text-slate-300 font-semibold">{checkId.slice(0, 12)}…</code>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-        {/* Category */}
-        <div>
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+        {/* Category Dropdown / Segmented View */}
+        <div className="space-y-2">
           <label
             htmlFor="report-category"
-            className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2"
+            className="text-[11px] font-mono uppercase tracking-widest text-slate-400 block"
           >
-            Category
+            Incident Category
           </label>
-          <select
-            id="report-category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value as ReportCategory)}
-            className="w-full rounded-xl bg-slate-800/60 border border-slate-700/50 text-slate-200 text-sm px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          >
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </select>
+          <div className="relative rounded-2xl glass p-1">
+            <select
+              id="report-category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value as ReportCategory)}
+              className="w-full rounded-xl bg-slate-950/80 px-4 py-3 text-slate-200 text-xs sm:text-sm font-medium border-0 focus:outline-none focus:ring-1 focus:ring-cyan-400 cursor-pointer"
+            >
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value} className="bg-slate-900 text-white">
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <p className="text-[11px] text-slate-400 px-1">
+            {CATEGORIES.find((c) => c.value === category)?.desc}
+          </p>
         </div>
 
-        {/* Severity */}
-        <fieldset>
-          <legend className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
-            Severity
+        {/* Severity Matrix */}
+        <fieldset className="space-y-2">
+          <legend className="text-[11px] font-mono uppercase tracking-widest text-slate-400">
+            Perceived Severity Level
           </legend>
           <div className="grid grid-cols-4 gap-2">
             {SEVERITIES.map((s) => (
               <label
                 key={s.value}
-                className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border cursor-pointer text-xs transition-colors duration-150 ${
-                  severity === s.value
-                    ? 'bg-slate-700/60 border-slate-500/60'
-                    : 'bg-slate-800/40 border-slate-700/40 hover:bg-slate-800/70'
-                }`}
+                className="relative cursor-pointer"
               >
                 <input
                   type="radio"
@@ -146,71 +160,89 @@ export default function ReportPage() {
                   value={s.value}
                   checked={severity === s.value}
                   onChange={() => setSeverity(s.value)}
-                  className="sr-only"
+                  className="sr-only peer"
                 />
-                <span className={`font-semibold ${s.color}`}>{s.label}</span>
+                <div
+                  className={`flex flex-col items-center justify-center p-3 rounded-2xl glass border border-white/5 transition-all text-xs font-semibold ${s.ring} hover:border-white/20`}
+                >
+                  <span className={s.color}>{s.label}</span>
+                </div>
               </label>
             ))}
           </div>
         </fieldset>
 
-        {/* Note */}
-        <div>
-          <label
-            htmlFor="report-note"
-            className="block text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2"
-          >
-            Additional context <span className="font-normal normal-case text-slate-600">(optional)</span>
-          </label>
-          <textarea
-            id="report-note"
-            rows={4}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Where did you encounter this? Any other context that might help the admin team…"
-            maxLength={2000}
-            className="w-full rounded-xl bg-slate-800/60 border border-slate-700/50 text-slate-200 placeholder-slate-600 text-sm px-4 py-3 resize-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
-          />
-          <p className="text-xs text-slate-600 mt-1 text-right">{note.length} / 2000</p>
+        {/* Contextual Forensics Note */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="report-note"
+              className="text-[11px] font-mono uppercase tracking-widest text-slate-400"
+            >
+              Contextual Observations
+            </label>
+            <span className="text-[11px] font-mono text-slate-500">
+              {note.length} / 2000
+            </span>
+          </div>
+          <div className="rounded-3xl glass p-1 focus-within:ring-2 focus-within:ring-cyan-400/50 transition-all">
+            <textarea
+              id="report-note"
+              rows={4}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="Detail location of physical QR sticker, sender handle, email header clues, or affected classmates..."
+              maxLength={2000}
+              className="w-full rounded-2xl bg-slate-950/60 p-4 text-slate-200 placeholder-slate-600 text-xs sm:text-sm border-0 focus:outline-none resize-none leading-relaxed"
+            />
+          </div>
         </div>
 
-        {/* Pseudonymous toggle */}
-        <label className="flex items-center gap-3 cursor-pointer group">
-          <div className="relative">
+        {/* Anonymous Submission Toggle */}
+        <div className="p-4 rounded-3xl glass border border-white/10 flex items-center justify-between gap-4">
+          <div className="space-y-0.5">
+            <p className="text-xs font-semibold text-white">
+              Pseudonymous Disclosure
+            </p>
+            <p className="text-[11px] text-slate-400 leading-normal">
+              Obscures your student handle in administrative triage views.
+            </p>
+          </div>
+
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
             <input
               type="checkbox"
               checked={pseudonymous}
               onChange={(e) => setPseudonymous(e.target.checked)}
               className="sr-only peer"
             />
-            <div className="w-10 h-6 rounded-full bg-slate-700 peer-checked:bg-blue-600 transition-colors" />
-            <div className="absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform peer-checked:translate-x-4" />
-          </div>
-          <div>
-            <p className="text-sm text-slate-300 font-medium">Submit anonymously</p>
-            <p className="text-xs text-slate-500">
-              Your identity will not be visible to administrators.
-            </p>
-          </div>
-        </label>
+            <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500 shadow-inner" />
+          </label>
+        </div>
 
         {error && <ErrorBanner message={error} onRetry={() => setError('')} />}
 
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:bg-blue-600/40 text-white font-semibold text-sm transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer disabled:cursor-not-allowed"
+          className="w-full btn-glow py-3.5 px-4 rounded-2xl font-semibold text-sm text-white flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 transition-all"
         >
           {loading ? (
             <>
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              Submitting…
+              <span>Sealing Cryptographic Evidence…</span>
             </>
           ) : (
-            'Submit Report'
+            <>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+              <span>Commit Incident Report</span>
+            </>
           )}
         </button>
       </form>

@@ -1,44 +1,54 @@
-/**
- * RiskBadge — colour-coded pill for red / amber / green verdicts.
- * Accessible: includes role="status" and a descriptive aria-label.
- */
 import type { RiskLevel } from '../../types/api';
 
 interface Props {
   risk: RiskLevel;
   score?: number;
+  size?: 'sm' | 'lg';
 }
 
-const CONFIG: Record<RiskLevel, { label: string; classes: string; dot: string }> = {
+const CONFIG: Record<RiskLevel, {
+  label: string;
+  pill: string;
+  dot: string;
+  glow: string;
+}> = {
   red: {
     label: 'High Risk',
-    classes: 'bg-red-500/15 border border-red-500/40 text-red-300',
-    dot: 'bg-red-400 animate-pulse',
+    pill: 'bg-red-500/15 border border-red-500/30 text-red-300',
+    dot: 'bg-red-400',
+    glow: 'shadow-red-500/30',
   },
   amber: {
     label: 'Caution',
-    classes: 'bg-amber-500/15 border border-amber-500/40 text-amber-300',
+    pill: 'bg-amber-500/15 border border-amber-500/30 text-amber-300',
     dot: 'bg-amber-400',
+    glow: 'shadow-amber-500/30',
   },
   green: {
     label: 'Safe',
-    classes: 'bg-emerald-500/15 border border-emerald-500/40 text-emerald-300',
+    pill: 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300',
     dot: 'bg-emerald-400',
+    glow: 'shadow-emerald-500/30',
   },
 };
 
-export default function RiskBadge({ risk, score }: Props) {
+export default function RiskBadge({ risk, score, size = 'sm' }: Props) {
   const cfg = CONFIG[risk];
+  const isLg = size === 'lg';
+
   return (
     <span
       role="status"
       aria-label={`Risk level: ${cfg.label}${score !== undefined ? `, score ${Math.round(score * 100)}` : ''}`}
-      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold ${cfg.classes}`}
+      className={`inline-flex items-center gap-2 rounded-full font-semibold shadow-md ${cfg.pill} ${cfg.glow} ${isLg ? 'px-4 py-1.5 text-base' : 'px-3 py-1 text-xs'}`}
     >
-      <span className={`w-2 h-2 rounded-full ${cfg.dot}`} aria-hidden="true" />
+      <span
+        className={`rounded-full shrink-0 ${cfg.dot} ${isLg ? 'w-2.5 h-2.5' : 'w-2 h-2'} ${risk === 'red' ? 'animate-pulse' : ''}`}
+        aria-hidden="true"
+      />
       {cfg.label}
       {score !== undefined && (
-        <span className="ml-1 opacity-70 text-xs font-normal">
+        <span className={`opacity-60 font-normal ${isLg ? 'text-sm' : 'text-[10px]'}`}>
           {Math.round(score * 100)}%
         </span>
       )}
