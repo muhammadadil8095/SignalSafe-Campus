@@ -1,6 +1,5 @@
 /**
- * CheckPage — Multi-vector threat inspector conforming to Snitch UX clarity & form standards.
- * Obvious affordances, scannable choices, and clear feedback.
+ * CheckPage — Swiss luxury-brutalist threat vector inspector.
  */
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -20,29 +19,29 @@ interface Option {
 const KIND_OPTIONS: Option[] = [
   {
     value: 'url',
-    label: 'URL / Link',
-    badge: 'Lexical ML',
+    label: 'Link / URL',
+    badge: 'LEXICAL ML',
     placeholder: 'https://campus-verify-fees.xyz/portal/login',
-    hint: 'Checks for IP hosts, punycode, typosquatting & official domain allowlist.',
+    hint: 'Evaluates IP hosts, punycode, typosquatting & official domain allowlist.',
   },
   {
     value: 'message',
-    label: 'SMS / Text Message',
-    badge: 'Heuristics',
+    label: 'SMS / Text',
+    badge: 'HEURISTICS',
     placeholder: 'URGENT: Dean of Students office requires verification of your hall pass immediately...',
     hint: 'Flags authority impersonation, artificial urgency, and deceptive link mismatches.',
   },
   {
     value: 'payment',
-    label: 'Fee / Payment Solicitations',
-    badge: 'Rule Engine',
+    label: 'Fee Demand',
+    badge: 'SYNTHETIC RULES',
     placeholder: 'Hostel dues pending: Pay 4,500 INR to registrar-helpdesk@okhdfcbank before 5 PM today.',
     hint: 'Evaluates unverified VPA formats, direct transfer solicitations, and panic triggers.',
   },
   {
     value: 'bullying',
-    label: 'Harassment / Threats',
-    badge: 'Lexicon Match',
+    label: 'Harassment',
+    badge: 'LEXICON MATCH',
     placeholder: 'Paste the abusive or threatening text you received on campus channels...',
     hint: 'Scans for toxic patterns and harassment keywords.',
   },
@@ -76,7 +75,7 @@ export default function CheckPage() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Threat inspection service was unavailable. Check network or backend status.',
+          : 'Threat inspection failed. Please verify API gateway availability.',
       );
     } finally {
       setLoading(false);
@@ -84,35 +83,36 @@ export default function CheckPage() {
   };
 
   return (
-    <div className="max-w-lg mx-auto space-y-5">
-      {/* Navigation Lifeboat */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-lg mx-auto space-y-6 px-4 py-8 font-satoshi">
+      {/* Top Breadcrumb */}
+      <div className="flex items-center justify-between pb-3 border-b border-[#1e1e1e]/10">
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs uppercase font-bold tracking-wider text-[#111111] hover:text-[#838282] transition-colors"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-          Back to Dashboard
+          <span>←</span>
+          <span>Return Home</span>
         </Link>
-        <span className="text-[11px] font-mono text-slate-500">FastAPI Telemetry</span>
+        <span className="font-mono text-[11px] uppercase tracking-widest text-[#838282]">
+          INFERENCE PIPELINE
+        </span>
       </div>
 
+      {/* Header */}
       <div>
-        <h1 className="text-xl font-bold text-white">
-          Inspect Threat Payload
+        <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111]">
+          Threat Inspector
         </h1>
-        <p className="text-xs text-slate-400 mt-0.5">
-          Submit suspicious links, messages, or payment requests for evidence-based risk scoring.
+        <p className="text-xs text-[#838282] mt-1 leading-relaxed">
+          Submit suspicious links, texts, or fee notices. Analysis is processed through centralized detection models.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-        {/* Vector Choice Tabs */}
+      <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {/* Classification Choice Grid */}
         <fieldset className="space-y-1.5">
-          <legend className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            Select Category
+          <legend className="text-xs font-mono uppercase tracking-wider text-[#838282]">
+            SELECT THREAT VECTOR
           </legend>
           <div className="grid grid-cols-2 gap-2">
             {KIND_OPTIONS.map((opt) => {
@@ -120,10 +120,10 @@ export default function CheckPage() {
               return (
                 <label
                   key={opt.value}
-                  className={`flex flex-col justify-between p-3 rounded-lg border cursor-pointer transition-colors select-none ${
+                  className={`flex flex-col justify-between p-3.5 border cursor-pointer transition-colors select-none ${
                     active
-                      ? 'bg-blue-950/40 border-blue-500 text-white'
-                      : 'card-clean text-slate-400 hover:border-slate-700 hover:text-slate-200'
+                      ? 'border-[#111111] bg-[#111111] text-[#f2f2f2]'
+                      : 'border-[#1e1e1e]/15 bg-[#ffffff] text-[#111111] hover:border-[#1e1e1e]/40'
                   }`}
                 >
                   <input
@@ -135,10 +135,10 @@ export default function CheckPage() {
                     className="sr-only"
                   />
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-semibold">{opt.label}</span>
-                    <span className={`w-2 h-2 rounded-full ${active ? 'bg-blue-400' : 'bg-slate-700'}`} />
+                    <span className="text-xs font-bold uppercase tracking-tight">{opt.label}</span>
+                    <span className={`w-1.5 h-1.5 ${active ? 'bg-[#f2f2f2]' : 'bg-[#111111]'}`} />
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">
+                  <span className={`text-[9px] font-mono tracking-wider ${active ? 'text-[#b6b5b5]' : 'text-[#838282]'}`}>
                     {opt.badge}
                   </span>
                 </label>
@@ -147,16 +147,16 @@ export default function CheckPage() {
           </div>
         </fieldset>
 
-        {/* Input Textarea */}
+        {/* Input Textarea Container */}
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <label
               htmlFor="check-input"
-              className="text-xs font-semibold uppercase tracking-wider text-slate-400"
+              className="text-xs font-mono uppercase tracking-wider text-[#838282]"
             >
-              Payload Text
+              PAYLOAD CONTENT
             </label>
-            <span className="text-xs font-mono text-slate-500">
+            <span className="text-xs font-mono text-[#838282]">
               {input.length} / 4000
             </span>
           </div>
@@ -169,28 +169,35 @@ export default function CheckPage() {
             placeholder={currentOption.placeholder}
             required
             maxLength={4000}
-            className="w-full rounded-lg bg-slate-900 border border-slate-700 p-3 text-slate-200 placeholder-slate-500 text-xs sm:text-sm font-mono focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none leading-relaxed"
+            className="w-full bg-[#ffffff] border border-[#1e1e1e] p-3 text-xs sm:text-sm font-mono text-[#111111] placeholder-[#b6b5b5] focus:outline-none focus:ring-1 focus:ring-[#111111] resize-none leading-relaxed"
           />
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-[#838282]">
             {currentOption.hint}
           </p>
         </div>
 
         {error && <ErrorBanner message={error} onRetry={() => setError('')} />}
 
-        {/* Primary Action Button */}
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="w-full btn-primary py-2.5 px-4 rounded-lg text-sm font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full pill-button-invert py-3 px-6 text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {loading ? 'Querying Detection Models…' : 'Analyze for Threat Signals'}
+          {loading ? (
+            <span>Evaluating Threat Vector…</span>
+          ) : (
+            <>
+              <span>Execute Threat Evaluation</span>
+              <span>→</span>
+            </>
+          )}
         </button>
       </form>
 
       {loading && (
-        <div className="card-clean rounded-xl p-6">
-          <Spinner label="Executing lexical analysis & feature extraction…" />
+        <div className="border border-[#1e1e1e] bg-[#ffffff] p-6">
+          <Spinner label="EXECUTING LEXICAL ATTRIBUTION & CLASSIFICATION…" />
         </div>
       )}
     </div>

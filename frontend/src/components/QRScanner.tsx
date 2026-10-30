@@ -1,10 +1,7 @@
 /**
- * QRScanner — On-device QR code decoding using the Nimiq qr-scanner library.
- *
- * Security rules:
- * - QR image data NEVER leaves the device.
- * - Only the decoded text payload is forwarded for analysis.
- * - Clean, non-distracting professional viewfinder.
+ * QRScanner — Swiss minimalist optical scanner.
+ * On-device QR decoding via Nimiq qr-scanner library.
+ * Zero frame upload: only decoded string is emitted.
  */
 import { useEffect, useRef, useState } from 'react';
 import QrScanner from 'qr-scanner';
@@ -64,11 +61,11 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
         ) {
           updateState('denied');
           setErrorMsg(
-            'Camera permission was denied. Please allow camera access in your browser settings to scan QR codes.',
+            'Camera permission blocked. Permit camera access in browser preferences.',
           );
         } else {
           updateState('error');
-          setErrorMsg(`Camera unavailable: ${msg}`);
+          setErrorMsg(`Optical sensor unavailable: ${msg}`);
         }
       });
 
@@ -80,8 +77,8 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
   }, []);
 
   return (
-    <div className="relative w-full max-w-sm mx-auto aspect-square rounded-2xl overflow-hidden bg-slate-950 border border-slate-800">
-      {/* Live camera stream */}
+    <div className="relative w-full max-w-sm mx-auto aspect-square border border-[#1e1e1e] bg-[#ffffff] overflow-hidden group shadow-sm">
+      {/* Video Stream */}
       <video
         ref={videoRef}
         className="w-full h-full object-cover"
@@ -90,53 +87,53 @@ export default function QRScanner({ onResult, onStateChange }: Props) {
         muted
       />
 
-      {/* Clean Viewfinder Guide */}
-      <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-5">
-        <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900/90 border border-slate-700">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            Active Viewfinder
+      {/* Swiss Monochromatic Reticle */}
+      <div className="absolute inset-0 pointer-events-none flex flex-col justify-between p-6">
+        <div className="flex items-center justify-between text-[10px] font-mono tracking-widest uppercase">
+          <span className="px-2 py-0.5 bg-[#ffffff] text-[#111111] border border-[#1e1e1e]/20 font-bold">
+            LIVE SENSOR
           </span>
-          <span className="px-2.5 py-1 rounded bg-slate-900/90 border border-slate-700 font-mono text-[10px]">
-            On-Device Decode
+          <span className="px-2 py-0.5 bg-[#ffffff] text-[#111111] border border-[#1e1e1e]/20">
+            WASM ENGINE
           </span>
         </div>
 
-        {/* Framing Corners */}
+        {/* Minimalist framing corners */}
         <div className="relative self-center w-48 h-48 flex items-center justify-center">
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-slate-300 rounded-tl" />
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-slate-300 rounded-tr" />
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-slate-300 rounded-bl" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-slate-300 rounded-br" />
+          <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#111111]" />
+          <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#111111]" />
+          <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#111111]" />
+          <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#111111]" />
+          <div className="w-1.5 h-1.5 bg-[#111111]" />
         </div>
 
         <div className="text-center">
-          <span className="inline-block text-xs font-medium text-slate-300 bg-slate-900/90 px-3 py-1 rounded border border-slate-700">
-            Point camera directly at QR code
+          <span className="inline-block text-[10px] font-mono uppercase tracking-wider text-[#111111] bg-[#ffffff] px-2.5 py-1 border border-[#1e1e1e]/20">
+            FRAME QR MATRIX INSIDE BOUNDS
           </span>
         </div>
       </div>
 
-      {/* Loading state */}
+      {/* Requesting Sensor */}
       {state === 'requesting' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-6 text-center gap-2">
-          <div className="w-6 h-6 border-2 border-slate-600 border-t-blue-500 rounded-full animate-spin" />
-          <p className="text-xs text-slate-300 font-medium">Initializing camera…</p>
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#ffffff]/95 p-6 text-center gap-2">
+          <div className="w-6 h-6 border-2 border-[#1e1e1e]/20 border-t-[#111111] rounded-full animate-spin" />
+          <p className="text-xs font-mono uppercase tracking-wider text-[#111111]">
+            Engaging optical sensor…
+          </p>
         </div>
       )}
 
-      {/* Error state */}
+      {/* Sensor Error */}
       {(state === 'denied' || state === 'error') && (
         <div
           role="alert"
-          className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/95 p-6 text-center gap-3"
+          className="absolute inset-0 flex flex-col items-center justify-center bg-[#ffffff] p-6 text-center gap-3"
         >
-          <div className="w-10 h-10 rounded-full bg-red-950/50 border border-red-800 flex items-center justify-center text-red-400">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z" />
-            </svg>
+          <div className="w-8 h-8 border border-[#111111] flex items-center justify-center font-mono font-bold text-sm">
+            ✕
           </div>
-          <p className="text-xs text-red-300 font-medium leading-relaxed max-w-xs">{errorMsg}</p>
+          <p className="text-xs font-medium text-[#111111] max-w-xs">{errorMsg}</p>
         </div>
       )}
     </div>

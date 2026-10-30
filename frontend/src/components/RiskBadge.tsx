@@ -1,3 +1,7 @@
+/**
+ * RiskBadge — Swiss luxury-brutalist editorial risk pill.
+ * High contrast monochromatic aesthetic with clear categorical distinction.
+ */
 import type { RiskLevel } from '../../types/api';
 
 interface Props {
@@ -8,23 +12,23 @@ interface Props {
 
 const CONFIG: Record<RiskLevel, {
   label: string;
-  pill: string;
-  dot: string;
+  classes: string;
+  indicator: string;
 }> = {
   red: {
-    label: 'High Risk',
-    pill: 'bg-red-500/10 border-red-500/30 text-red-400',
-    dot: 'bg-red-500',
+    label: 'HIGH RISK',
+    classes: 'bg-[#111111] text-[#f2f2f2] border border-[#111111]',
+    indicator: 'bg-red-500',
   },
   amber: {
-    label: 'Suspicious',
-    pill: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
-    dot: 'bg-amber-500',
+    label: 'SUSPICIOUS',
+    classes: 'bg-[#ffffff] text-[#111111] border border-[#1e1e1e]/40',
+    indicator: 'bg-amber-500',
   },
   green: {
-    label: 'Legitimate',
-    pill: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
-    dot: 'bg-emerald-500',
+    label: 'LEGITIMATE',
+    classes: 'bg-[#ffffff] text-[#111111] border border-[#1e1e1e]/20',
+    indicator: 'bg-emerald-500',
   },
 };
 
@@ -36,18 +40,18 @@ export default function RiskBadge({ risk, score, size = 'sm' }: Props) {
     <span
       role="status"
       aria-label={`Risk level: ${cfg.label}${score !== undefined ? `, score ${Math.round(score * 100)}` : ''}`}
-      className={`inline-flex items-center gap-2 rounded-full font-semibold border ${cfg.pill} ${
-        isLg ? 'px-3.5 py-1.5 text-sm' : 'px-2.5 py-1 text-xs'
+      className={`inline-flex items-center gap-2 rounded-full font-mono font-bold tracking-wider uppercase ${cfg.classes} ${
+        isLg ? 'px-4 py-1.5 text-xs' : 'px-3 py-1 text-[10px]'
       }`}
     >
       <span
-        className={`rounded-full shrink-0 ${cfg.dot} ${isLg ? 'w-2.5 h-2.5' : 'w-2 h-2'}`}
+        className={`rounded-full shrink-0 ${cfg.indicator} ${isLg ? 'w-2 h-2' : 'w-1.5 h-1.5'}`}
         aria-hidden="true"
       />
       {cfg.label}
       {score !== undefined && (
-        <span className="opacity-75 font-mono text-[11px] font-normal">
-          ({Math.round(score * 100)}%)
+        <span className="opacity-60 font-mono text-[10px]">
+          [{Math.round(score * 100)}%]
         </span>
       )}
     </span>

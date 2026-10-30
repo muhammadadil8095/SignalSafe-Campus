@@ -1,5 +1,5 @@
 /**
- * ReportConfirmPage — Clean, professional evidence confirmation receipt.
+ * ReportConfirmPage — Swiss luxury-brutalist cryptographic evidence receipt.
  */
 import { useLocation, Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -17,13 +17,13 @@ export default function ReportConfirmPage() {
 
   if (!report) {
     return (
-      <div className="max-w-sm mx-auto text-center py-16 space-y-3">
-        <p className="text-slate-400 text-sm">No report submission data found.</p>
+      <div className="max-w-md mx-auto text-center py-20 space-y-4 font-satoshi">
+        <p className="text-[#838282] text-sm">No report submission data found.</p>
         <Link
           to="/"
-          className="inline-block px-3 py-1.5 rounded-lg bg-slate-800 text-blue-400 text-xs font-semibold"
+          className="pill-button-invert inline-block px-6 py-2.5 text-xs uppercase tracking-wider font-bold"
         >
-          Return to Dashboard
+          Return to Overview
         </Link>
       </div>
     );
@@ -40,78 +40,79 @@ export default function ReportConfirmPage() {
   };
 
   return (
-    <div className="max-w-sm mx-auto space-y-5 py-2">
-      {/* Success Icon */}
+    <div className="max-w-md mx-auto space-y-6 px-4 py-8 font-satoshi">
+      {/* Icon Badge */}
       <div className="flex justify-center">
-        <div className="w-14 h-14 rounded-full bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-          <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
+        <div className="w-16 h-16 rounded-full border-2 border-[#111111] flex items-center justify-center font-clash text-2xl font-bold text-[#111111]">
+          ✓
         </div>
       </div>
 
       <div className="text-center space-y-1">
-        <h1 className="text-xl font-bold text-white">
-          Report Logged
+        <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#838282]">
+          AUDIT CHAIN SEALED
+        </span>
+        <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111]">
+          Evidence Receipt
         </h1>
-        <p className="text-xs text-slate-400">
-          Incident received and queued for campus administration review.
+        <p className="text-xs text-[#838282] max-w-xs mx-auto">
+          The threat evidence has been cryptographically signed and queued for campus administrator review.
         </p>
       </div>
 
-      {/* Details Box */}
-      <div className="card-clean rounded-xl p-5 space-y-3 text-xs">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-          <span className="text-slate-400 uppercase font-semibold text-[10px]">Status</span>
-          <span className="badge-green px-2 py-0.5 rounded text-xs font-semibold">
+      {/* Structured Receipt Box */}
+      <div className="border border-[#1e1e1e] bg-[#ffffff] p-6 space-y-4 text-xs font-mono shadow-sm">
+        <div className="flex items-center justify-between pb-3 border-b border-[#1e1e1e]/15">
+          <span className="text-[#838282] uppercase text-[10px]">INCIDENT STATUS</span>
+          <span className="bg-[#111111] text-[#f2f2f2] px-2 py-0.5 text-[11px] font-bold">
             {report.status.toUpperCase()}
           </span>
         </div>
 
         <div>
-          <p className="text-slate-400 uppercase text-[10px] font-semibold">Report Identifier</p>
-          <p className="text-slate-200 font-mono text-xs mt-0.5 select-all">{report.report_id}</p>
+          <p className="text-[#838282] uppercase text-[10px]">RECORD IDENTIFIER</p>
+          <p className="text-[#111111] font-bold select-all mt-0.5">{report.report_id}</p>
         </div>
 
         <div>
-          <p className="text-slate-400 uppercase text-[10px] font-semibold">Logged Timestamp</p>
-          <p className="text-slate-300 text-xs mt-0.5">
+          <p className="text-[#838282] uppercase text-[10px]">TIMESTAMP RECORDED</p>
+          <p className="text-[#111111] mt-0.5">
             {new Date(report.created_at).toLocaleString()}
           </p>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-slate-400 uppercase text-[10px] font-semibold">
-              Evidence SHA-256 Checksum
+            <span className="text-[#838282] uppercase text-[10px]">
+              EVIDENCE SHA-256 DIGEST
             </span>
             <button
               onClick={copyHash}
-              className="text-[11px] text-blue-400 hover:text-blue-300 font-medium cursor-pointer"
+              className="text-[11px] font-bold text-[#111111] underline underline-offset-2 hover:text-[#838282] cursor-pointer"
             >
-              {copied ? '✓ Copied' : 'Copy'}
+              {copied ? 'COPIED ✓' : 'COPY'}
             </button>
           </div>
-          <code className="block text-[11px] font-mono text-slate-300 break-all bg-slate-900 rounded p-2.5 border border-slate-800 select-all">
+          <code className="block text-[11px] bg-[#f2f2f2] p-3 border border-[#1e1e1e]/20 text-[#111111] break-all select-all font-mono leading-relaxed">
             {report.evidence_sha256}
           </code>
-          <p className="text-[10px] text-slate-500 mt-1">
-            Cryptographic digest verifying the evidence payload remains unaltered.
+          <p className="text-[10px] text-[#838282] mt-1.5 leading-normal">
+            This SHA-256 digest acts as a mathematical guarantee that the submitted evidence remains unaltered in the audit log.
           </p>
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="space-y-2">
+      {/* Return Actions */}
+      <div className="space-y-3">
         <Link
           to="/"
-          className="w-full btn-primary py-2.5 px-4 rounded-lg text-xs font-medium text-center block"
+          className="w-full pill-button-invert py-3 px-6 text-xs uppercase tracking-widest font-bold text-center block"
         >
-          Return to Dashboard
+          Return to Overview
         </Link>
         <Link
           to="/scan"
-          className="w-full btn-secondary py-2 px-4 rounded-lg text-xs font-medium text-center block"
+          className="w-full border border-[#1e1e1e]/30 bg-[#ffffff] text-[#111111] hover:bg-[#f2f2f2] py-2.5 px-4 text-xs uppercase tracking-wider font-bold text-center block transition-colors"
         >
           Scan Another QR Code
         </Link>

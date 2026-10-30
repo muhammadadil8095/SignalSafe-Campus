@@ -1,5 +1,5 @@
 /**
- * VerdictPage — Displays backend analysis results in a clean layout.
+ * VerdictPage — Swiss luxury-brutalist dossier view.
  */
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import type { AnalysisResponse } from '../types/api';
@@ -17,13 +17,13 @@ export default function VerdictPage() {
 
   if (!state?.result) {
     return (
-      <div className="max-w-sm mx-auto text-center py-16 space-y-3">
-        <p className="text-slate-400 text-sm">No analysis result loaded.</p>
+      <div className="max-w-md mx-auto text-center py-20 space-y-4 font-satoshi">
+        <p className="text-[#838282] text-sm">No analysis dossier active in memory.</p>
         <Link
           to="/"
-          className="inline-block px-3 py-1.5 rounded-lg bg-slate-800 text-blue-400 text-xs font-semibold hover:bg-slate-700 transition-colors"
+          className="pill-button-invert inline-block px-6 py-2.5 text-xs uppercase tracking-wider font-bold"
         >
-          Return to Dashboard
+          Return to Overview
         </Link>
       </div>
     );
@@ -38,40 +38,38 @@ export default function VerdictPage() {
   const backPath = state.source === 'qr' ? '/scan' : '/check';
 
   return (
-    <div className="max-w-lg mx-auto space-y-4">
-      {/* Navigation Bar */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-lg mx-auto space-y-6 px-4 py-8 font-satoshi">
+      {/* Navigation Line */}
+      <div className="flex items-center justify-between pb-3 border-b border-[#1e1e1e]/10">
         <button
           onClick={() => navigate(backPath)}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs uppercase font-bold tracking-wider text-[#111111] hover:text-[#838282] transition-colors"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
-          Back to Inspector
+          <span>←</span>
+          <span>Back to Inspector</span>
         </button>
 
-        <span className="text-[11px] font-mono text-slate-400">
-          Inference Complete
+        <span className="font-mono text-xs uppercase tracking-widest text-[#838282]">
+          VERIFIED BY ML ENGINE
         </span>
       </div>
 
-      {/* Main Result */}
+      {/* Main Result Card */}
       <VerdictCard result={result} onReport={handleReport} />
 
-      {/* Actions */}
-      <div className="grid grid-cols-2 gap-2.5 pt-1">
+      {/* Action Anchors */}
+      <div className="grid grid-cols-2 gap-4 pt-2">
         <Link
           to="/scan"
-          className="btn-secondary text-center text-xs py-2 px-3 rounded-lg"
+          className="pill-button-invert text-center py-3 px-4 text-xs uppercase tracking-wider font-bold"
         >
           Scan Another QR
         </Link>
         <Link
           to="/check"
-          className="btn-secondary text-center text-xs py-2 px-3 rounded-lg"
+          className="pill-button-invert text-center py-3 px-4 text-xs uppercase tracking-wider font-bold"
         >
-          Inspect Another Item
+          Check Another Item
         </Link>
       </div>
     </div>

@@ -5,23 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- PWA meta -->
-    <meta name="theme-color" content="#0f172a" />
-    <meta name="application-name" content="SignalSafe Campus" />
+    <meta name="theme-color" content="#f2f2f2" />
+    <meta name="application-name" content="SignalSafe" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="SignalSafe" />
     <meta name="mobile-web-app-capable" content="yes" />
 
     <!-- SEO / OG -->
     <meta
       name="description"
-      content="Campus cybersecurity PWA — scan QR codes, check suspicious links and report threats."
+      content="SignalSafe Campus — High-contrast Swiss minimalist threat detection and forensic defense platform."
     />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>SignalSafe Campus</title>
+
+    <!-- Typography: Clash Display, Satoshi, Instrument Serif -->
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500&f[]=satoshi@700,500,400&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+    <title>SignalSafe — Campus Cybersecurity System</title>
   </head>
-  <body>
+  <body class="bg-[#f2f2f2] text-[#111111]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

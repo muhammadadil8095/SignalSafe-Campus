@@ -1,5 +1,5 @@
 /**
- * AdminPage — Clean, professional campus incident triage console.
+ * AdminPage — Swiss luxury-brutalist campus incident triage console.
  */
 import { useEffect, useState, useCallback } from 'react';
 import { api } from '../services/api';
@@ -15,23 +15,11 @@ const STATUS_OPTIONS: ReportStatus[] = [
   'dismissed',
 ];
 
-const STATUS_CONFIG: Record<ReportStatus, { label: string; badgeClass: string }> = {
-  received: {
-    label: 'Received',
-    badgeClass: 'bg-blue-950/40 border-blue-700/60 text-blue-300',
-  },
-  under_review: {
-    label: 'Under Review',
-    badgeClass: 'bg-amber-950/40 border-amber-700/60 text-amber-300',
-  },
-  resolved: {
-    label: 'Resolved',
-    badgeClass: 'bg-emerald-950/40 border-emerald-700/60 text-emerald-300',
-  },
-  dismissed: {
-    label: 'Dismissed',
-    badgeClass: 'bg-slate-800 border-slate-700 text-slate-400',
-  },
+const STATUS_LABELS: Record<ReportStatus, string> = {
+  received: 'RECEIVED',
+  under_review: 'UNDER REVIEW',
+  resolved: 'RESOLVED',
+  dismissed: 'DISMISSED',
 };
 
 export default function AdminPage() {
@@ -56,7 +44,7 @@ export default function AdminPage() {
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to load report queue. Administrator authorization required.',
+          : 'Failed to query report queue. Administrator authorization required.',
       );
     } finally {
       setLoading(false);
@@ -103,55 +91,55 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-5">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="max-w-4xl mx-auto space-y-6 px-4 py-8 font-satoshi">
+      {/* Console Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-4 border-b border-[#1e1e1e]/15 gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white">
-            Incident Triage Console
+          <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#838282] block">
+            ADMINISTRATIVE DISPATCH
+          </span>
+          <h1 className="font-clash text-3xl font-bold tracking-tight text-[#111111] mt-1">
+            Incident Triage Deck
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Campus security officer dashboard with append-only audit trail.
+          <p className="text-xs text-[#838282] mt-0.5">
+            Campus security officer oversight with append-only cryptographic audit logging.
           </p>
         </div>
 
         <button
           onClick={() => void fetchReports()}
-          className="btn-secondary text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+          className="pill-button-invert px-5 py-2 text-xs uppercase tracking-wider font-bold inline-flex items-center gap-2 self-start sm:self-auto"
         >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-          </svg>
-          Refresh
+          <span>Refresh Queue</span>
+          <span>↻</span>
         </button>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-mono font-bold">
         <button
           onClick={() => setFilterStatus('')}
-          className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap ${
+          className={`px-3 py-1.5 border transition-colors whitespace-nowrap uppercase ${
             filterStatus === ''
-              ? 'bg-blue-600 text-white'
-              : 'card-clean text-slate-400 hover:text-white'
+              ? 'bg-[#111111] text-[#f2f2f2] border-[#111111]'
+              : 'bg-[#ffffff] text-[#111111] border-[#1e1e1e]/20 hover:border-[#1e1e1e]/50'
           }`}
         >
-          All
+          ALL QUEUES
         </button>
         {STATUS_OPTIONS.map((s) => {
           const active = filterStatus === s;
-          const cfg = STATUS_CONFIG[s];
           return (
             <button
               key={s}
               onClick={() => setFilterStatus(s)}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-colors whitespace-nowrap ${
+              className={`px-3 py-1.5 border transition-colors whitespace-nowrap uppercase ${
                 active
-                  ? 'bg-blue-600 text-white'
-                  : 'card-clean text-slate-400 hover:text-white'
+                  ? 'bg-[#111111] text-[#f2f2f2] border-[#111111]'
+                  : 'bg-[#ffffff] text-[#111111] border-[#1e1e1e]/20 hover:border-[#1e1e1e]/50'
               }`}
             >
-              {cfg.label}
+              {STATUS_LABELS[s]}
             </button>
           );
         })}
@@ -160,48 +148,47 @@ export default function AdminPage() {
       {error && <ErrorBanner message={error} onRetry={() => void fetchReports()} />}
 
       {loading && (
-        <div className="card-clean rounded-xl p-8">
-          <Spinner label="Loading incident reports…" />
+        <div className="border border-[#1e1e1e] bg-[#ffffff] p-8">
+          <Spinner label="FETCHING AUDIT LEDGER ENTRIES…" />
         </div>
       )}
 
       {/* Empty State */}
       {!loading && reports.length === 0 && (
-        <div className="card-clean rounded-xl p-8 text-center space-y-1 text-slate-400">
-          <p className="text-sm font-medium text-slate-300">No Incidents in Queue</p>
-          <p className="text-xs">All clear for the selected filter state.</p>
+        <div className="border border-[#1e1e1e]/20 bg-[#ffffff] p-8 text-center space-y-1 font-mono text-xs text-[#838282]">
+          <p className="font-bold text-[#111111]">QUEUE EMPTY</p>
+          <p>No reports currently assigned to this status filter.</p>
         </div>
       )}
 
       {/* Incident List */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {reports.map((report) => {
           const isSelected = selectedReport?.report_id === report.report_id;
-          const statusCfg = STATUS_CONFIG[report.status] ?? STATUS_CONFIG.received;
 
           return (
             <button
               key={report.report_id}
               onClick={() => void openReport(report)}
-              className={`w-full text-left rounded-xl p-4 border transition-colors cursor-pointer ${
+              className={`w-full text-left p-5 border transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-slate-900 border-blue-500'
-                  : 'card-interactive'
+                  ? 'border-[#111111] bg-[#ffffff] shadow-md'
+                  : 'border-[#1e1e1e]/15 bg-[#ffffff] hover:border-[#1e1e1e]/40'
               }`}
             >
-              <div className="flex items-start justify-between gap-2 flex-wrap">
+              <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-white capitalize">
-                      {report.category}
+                    <span className="font-clash text-base font-bold text-[#111111] uppercase tracking-tight">
+                      {report.category} Incident
                     </span>
                     {report.pseudonymous && (
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                      <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 border border-[#1e1e1e]/20 text-[#838282] bg-[#f2f2f2]">
                         ANONYMOUS
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="font-mono text-[11px] text-[#838282] mt-0.5">
                     {new Date(report.created_at).toLocaleString()}
                   </p>
                 </div>
@@ -216,14 +203,14 @@ export default function AdminPage() {
                         : 'green'
                     }
                   />
-                  <span className={`text-[11px] font-medium px-2 py-0.5 rounded border ${statusCfg.badgeClass}`}>
-                    {statusCfg.label}
+                  <span className="font-mono text-[10px] font-bold px-2 py-0.5 border border-[#1e1e1e]/20 bg-[#f2f2f2] text-[#111111]">
+                    {report.status.toUpperCase()}
                   </span>
                 </div>
               </div>
 
               {report.note && (
-                <p className="text-xs text-slate-300 mt-2 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-[#111111] mt-3 leading-relaxed border-t border-[#1e1e1e]/10 pt-2 font-normal">
                   "{report.note}"
                 </p>
               )}
@@ -232,64 +219,65 @@ export default function AdminPage() {
         })}
       </div>
 
-      {/* Details & Action Drawer */}
+      {/* Investigation Drawer */}
       {selectedReport && (
-        <div className="card-clean rounded-xl p-5 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <h2 className="text-sm font-bold text-white">
-              Incident Investigation
+        <div className="border-2 border-[#111111] bg-[#ffffff] p-6 space-y-5 shadow-lg">
+          <div className="flex items-center justify-between pb-3 border-b border-[#1e1e1e]/15">
+            <h2 className="font-clash text-lg font-bold text-[#111111] uppercase tracking-tight">
+              Incident Remediation Panel
             </h2>
             <button
               onClick={() => setSelectedReport(null)}
-              className="text-xs text-slate-400 hover:text-white"
+              className="text-xs font-mono font-bold text-[#838282] hover:text-[#111111]"
             >
-              Close ✕
+              [CLOSE ✕]
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5 text-xs">
-            <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-              <p className="text-[10px] text-slate-400 font-semibold uppercase">Report ID</p>
-              <p className="text-slate-200 font-mono select-all mt-0.5">{selectedReport.report_id.slice(0, 14)}…</p>
+          <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+            <div className="p-3 bg-[#f2f2f2] border border-[#1e1e1e]/10">
+              <p className="text-[10px] text-[#838282] uppercase">REPORT ID</p>
+              <p className="text-[#111111] font-bold select-all mt-0.5">{selectedReport.report_id}</p>
             </div>
-            <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-              <p className="text-[10px] text-slate-400 font-semibold uppercase">Check ID</p>
-              <p className="text-slate-200 font-mono select-all mt-0.5">{selectedReport.check_id.slice(0, 14)}…</p>
+            <div className="p-3 bg-[#f2f2f2] border border-[#1e1e1e]/10">
+              <p className="text-[10px] text-[#838282] uppercase">CHECK UUID</p>
+              <p className="text-[#111111] font-bold select-all mt-0.5">{selectedReport.check_id}</p>
             </div>
-            <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-              <p className="text-[10px] text-slate-400 font-semibold uppercase">Category / Severity</p>
-              <p className="text-slate-200 capitalize mt-0.5">{selectedReport.category} · {selectedReport.severity}</p>
+            <div className="p-3 bg-[#f2f2f2] border border-[#1e1e1e]/10">
+              <p className="text-[10px] text-[#838282] uppercase">CATEGORY / SEVERITY</p>
+              <p className="text-[#111111] uppercase mt-0.5">{selectedReport.category} · {selectedReport.severity}</p>
             </div>
-            <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-              <p className="text-[10px] text-slate-400 font-semibold uppercase">Submission Type</p>
-              <p className="text-slate-200 mt-0.5">{selectedReport.pseudonymous ? 'Anonymous' : 'Identified'}</p>
+            <div className="p-3 bg-[#f2f2f2] border border-[#1e1e1e]/10">
+              <p className="text-[10px] text-[#838282] uppercase">DISCLOSURE TYPE</p>
+              <p className="text-[#111111] mt-0.5">{selectedReport.pseudonymous ? 'Pseudonymous' : 'Identified'}</p>
             </div>
           </div>
 
           {selectedReport.note && (
             <div>
-              <p className="text-[11px] font-semibold text-slate-400 uppercase">Reporter Notes</p>
-              <p className="text-xs text-slate-200 mt-1 p-2.5 rounded bg-slate-900 border border-slate-800 leading-relaxed">
+              <p className="text-[11px] font-mono font-bold uppercase text-[#838282]">REPORTER STATEMENT</p>
+              <p className="text-xs text-[#111111] mt-1 p-3 bg-[#f2f2f2] border border-[#1e1e1e]/10 leading-relaxed">
                 {selectedReport.note}
               </p>
             </div>
           )}
 
-          {/* Status Mutation */}
-          <div className="space-y-2 pt-2 border-t border-slate-800">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase">Update Incident Status</p>
+          {/* Status Mutation Controls */}
+          <div className="space-y-3 pt-3 border-t border-[#1e1e1e]/15">
+            <p className="text-[11px] font-mono font-bold uppercase text-[#838282]">
+              TRANSITION INCIDENT STATE
+            </p>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 font-mono text-xs">
               {STATUS_OPTIONS.map((s) => {
                 const active = patchStatus === s;
-                const cfg = STATUS_CONFIG[s];
                 return (
                   <label
                     key={s}
-                    className={`flex items-center gap-2 p-2 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
+                    className={`flex items-center gap-2 p-2.5 border cursor-pointer font-bold transition-colors ${
                       active
-                        ? 'bg-blue-950/40 border-blue-500 text-blue-300'
-                        : 'card-clean text-slate-400 hover:text-white'
+                        ? 'bg-[#111111] text-[#f2f2f2] border-[#111111]'
+                        : 'bg-[#ffffff] text-[#111111] border-[#1e1e1e]/20 hover:border-[#1e1e1e]/50'
                     }`}
                   >
                     <input
@@ -300,8 +288,8 @@ export default function AdminPage() {
                       onChange={() => setPatchStatus(s)}
                       className="sr-only"
                     />
-                    <span className={`w-2 h-2 rounded-full ${active ? 'bg-blue-400' : 'bg-slate-600'}`} />
-                    {cfg.label}
+                    <span className={`w-2 h-2 ${active ? 'bg-[#f2f2f2]' : 'bg-[#111111]'}`} />
+                    {STATUS_LABELS[s]}
                   </label>
                 );
               })}
@@ -311,41 +299,43 @@ export default function AdminPage() {
               rows={2}
               value={patchNote}
               onChange={(e) => setPatchNote(e.target.value)}
-              placeholder="Internal resolution note for audit log..."
+              placeholder="Internal resolution notes for cryptographic audit trail..."
               maxLength={1000}
-              className="w-full rounded-lg bg-slate-900 border border-slate-700 p-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none font-mono"
+              className="w-full bg-[#f2f2f2] border border-[#1e1e1e]/30 p-2.5 text-xs text-[#111111] placeholder-[#838282] focus:outline-none focus:ring-1 focus:ring-[#111111] resize-none font-mono"
             />
 
             <button
               onClick={() => void handlePatch()}
               disabled={patchLoading}
-              className="w-full btn-primary py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer disabled:opacity-50"
+              className="w-full pill-button-invert py-2.5 px-4 text-xs font-mono font-bold uppercase tracking-wider cursor-pointer disabled:opacity-40"
             >
-              {patchLoading ? 'Updating Audit Ledger…' : 'Save Status Update'}
+              {patchLoading ? 'Updating Audit Stream…' : 'Commit Status Modification →'}
             </button>
           </div>
 
-          {/* Audit Log */}
-          <div className="pt-2 border-t border-slate-800 space-y-2">
-            <h3 className="text-[11px] font-semibold text-slate-400 uppercase">Audit Log Events</h3>
+          {/* Audit Log Timeline */}
+          <div className="pt-3 border-t border-[#1e1e1e]/15 space-y-2">
+            <h3 className="text-[11px] font-mono font-bold uppercase text-[#838282]">
+              Append-Only Audit Stream
+            </h3>
 
-            {auditLoading && <Spinner label="Loading audit trail…" />}
+            {auditLoading && <Spinner label="QUERYING EVENT LOG…" />}
 
             {!auditLoading && auditLog.length === 0 && (
-              <p className="text-xs text-slate-500 font-mono">No audit events logged yet.</p>
+              <p className="text-xs font-mono text-[#838282]">No prior modifications logged.</p>
             )}
 
-            <div className="space-y-1.5 max-h-36 overflow-y-auto">
+            <div className="space-y-1.5 max-h-36 overflow-y-auto font-mono text-xs">
               {auditLog.map((evt) => (
                 <div
                   key={evt.event_id}
-                  className="flex items-center justify-between text-xs font-mono p-2 rounded bg-slate-900 border border-slate-800 text-slate-300"
+                  className="flex items-center justify-between p-2 bg-[#f2f2f2] border border-[#1e1e1e]/10 text-[#111111]"
                 >
                   <div>
-                    <span className="text-blue-400 font-semibold">{evt.action}</span>
-                    <span className="text-slate-400 ml-1.5">by {evt.actor}</span>
+                    <span className="font-bold">{evt.action}</span>
+                    <span className="text-[#838282] ml-2">by {evt.actor}</span>
                   </div>
-                  <span className="text-slate-500 text-[10px]">{new Date(evt.created_at).toLocaleTimeString()}</span>
+                  <span className="text-[#838282] text-[10px]">{new Date(evt.created_at).toLocaleTimeString()}</span>
                 </div>
               ))}
             </div>
